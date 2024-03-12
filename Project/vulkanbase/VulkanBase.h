@@ -16,6 +16,8 @@
 #include <limits>
 #include <algorithm>
 
+#include "GP2CommandPool.h"
+#include "GP2Mesh.h"
 #include  "GP2Shader.h"
 
 const std::vector<const char*> validationLayers = {
@@ -71,8 +73,10 @@ private:
 		createGraphicsPipeline();
 		createFrameBuffers();
 		// week 02
-		createCommandPool();
-		createCommandBuffer();
+		commandPool.Initialize(device, findQueueFamilies(physicalDevice));
+		vertexBuffer.Initialize(device, physicalDevice);
+		vertexBuffer.CreateVertexBuffer(mesh);
+		commandBuffer = commandPool.createCommandBuffer();
 
 		// week 06
 		createSyncObjects();
@@ -92,7 +96,10 @@ private:
 		vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
 		vkDestroyFence(device, inFlightFence, nullptr);
 
-		vkDestroyCommandPool(device, commandPool, nullptr);
+		//todo check this
+		//vkDestroyCommandPool(device, commandPool, nullptr);
+		commandPool.Destroy();
+
 		for (auto framebuffer : swapChainFramebuffers) {
 			vkDestroyFramebuffer(device, framebuffer, nullptr);
 		}
@@ -147,17 +154,23 @@ private:
 	// Queue families
 	// CommandBuffer concept
 
-	VkCommandPool commandPool;
-	VkCommandBuffer commandBuffer;
+	GP2CommandPool commandPool;
+	GP2CommandBuffer commandBuffer;
+	GP2Mesh mesh{};
+	GP2VertexBuffer vertexBuffer;
 
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
+
 	void drawFrame(uint32_t imageIndex);
-	void createCommandBuffer();
-	void createCommandPool(); 
-	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
-	
+	//void createCommandBuffer();
+	//void createCommandPool(); 
+	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkBuffer vertexBuffer);
+
+	void CreateVertexBuffer();
+
 	// Week 03
+
 	// Renderpass concept
 	// Graphics pipeline
 	

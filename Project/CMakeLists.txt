@@ -36,7 +36,7 @@ set(SOURCES
     "labwork/Week04.cpp" 
     "labwork/Week05.cpp"
     "labwork/Week06.cpp"
- "GP2Shader.h" "GP2Shader.cpp" "shaders/Vertex.h" "GP2Vertex.h")
+ "GP2Shader.h" "GP2Shader.cpp" "shaders/Vertex.h" "GP2Vertex.h" "GP2CommandPool.cpp" "GP2CommandBuffer.cpp" "GP2Mesh.h" )
 
 # Create the executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${GLSL_SOURCE_FILES} )

@@ -18,7 +18,6 @@ void GP2Shader::destroyShaderModules(const VkDevice& vkDevice)
 }
 
 
-
 VkPipelineShaderStageCreateInfo GP2Shader::createFragmentShaderInfo(const VkDevice& vkDevice) {
 	std::vector<char> fragShaderCode = readFile(m_FragmentShaderFile);
 	VkShaderModule fragShaderModule = createShaderModule(vkDevice, fragShaderCode);
@@ -46,17 +45,17 @@ VkPipelineShaderStageCreateInfo GP2Shader::createVertexShaderInfo(const VkDevice
 
 VkPipelineVertexInputStateCreateInfo GP2Shader::createVertexInputStateInfo()
 {
-	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
-	auto bindingDescription = Vertex::getBindingDescription();
-	auto attributeDescriptions = Vertex::getAttributeDescriptions();
+	//auto bindingDescription = Vertex::getBindingDescription();
+	//auto attributeDescriptions = Vertex::getAttributeDescriptions();
 
+	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertexInputInfo.vertexBindingDescriptionCount = 1;
-	vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
-	//vertexInputInfo.vertexBindingDescriptionCount = 0;
-	vertexInputInfo.vertexAttributeDescriptionCount = 0;
-	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
-	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+	//vertexInputInfo.vertexBindingDescriptionCount = 1;
+	//vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+	////vertexInputInfo.vertexBindingDescriptionCount = 0;
+	////vertexInputInfo.vertexAttributeDescriptionCount = 0;
+	//vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+	//vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data(); //todo: this is wrong.
 
 	return vertexInputInfo;
 }

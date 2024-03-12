@@ -16,9 +16,12 @@
 #include <limits>
 #include <algorithm>
 
+#include  "GP2Shader.h"
 #include "GP2CommandPool.h"
 #include "GP2Mesh.h"
-#include  "GP2Shader.h"
+
+
+
 
 const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"
@@ -28,14 +31,7 @@ const std::vector<const char*> deviceExtensions = {
 	VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
 
-struct QueueFamilyIndices {
-	std::optional<uint32_t> graphicsFamily;
-	std::optional<uint32_t> presentFamily;
 
-	bool isComplete() {
-		return graphicsFamily.has_value() && presentFamily.has_value();
-	}
-};
 
 struct SwapChainSupportDetails {
 	VkSurfaceCapabilitiesKHR capabilities;
@@ -98,6 +94,8 @@ private:
 
 		//todo check this
 		//vkDestroyCommandPool(device, commandPool, nullptr);
+
+		vertexBuffer.Cleanup();
 		commandPool.Destroy();
 
 		for (auto framebuffer : swapChainFramebuffers) {
@@ -167,7 +165,7 @@ private:
 	//void createCommandPool(); 
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkBuffer vertexBuffer);
 
-	void CreateVertexBuffer();
+	//void CreateVertexBuffer();
 
 	// Week 03
 

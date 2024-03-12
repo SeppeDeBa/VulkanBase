@@ -125,6 +125,15 @@ void VulkanBase::createGraphicsPipeline() {
 	//pipelineInfo.pStages = &m_GradientShader.getShaderStages()[0];
 	pipelineInfo.pStages = m_GradientShader.getShaderStages().data();//same
 	VkPipelineVertexInputStateCreateInfo is = m_GradientShader.createVertexInputStateInfo() ;
+
+
+	auto bindingDescription = Vertex::GetBindingDescription();
+	auto attributeDescription = Vertex::GetAttributeDescriptions();
+	is.vertexBindingDescriptionCount = 1;
+	is.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescription.size());
+	is.pVertexBindingDescriptions = &bindingDescription;
+	is.pVertexAttributeDescriptions = attributeDescription.data();
+
 	pipelineInfo.pVertexInputState = &is;
 	pipelineInfo.pInputAssemblyState = &m_GradientShader.createInputAssemblyStateInfo();
 

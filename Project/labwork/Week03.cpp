@@ -153,6 +153,6 @@ void VulkanBase::createGraphicsPipeline() {
 	}
 
 	m_GradientShader.destroyShaderModules(device);
-	//vkDestroyShaderModule(device, vertShaderStageInfo.module, nullptr);
+	//vkDestroyShaderModule(device, vertShaderStageInfo.module, nullptr);c
 	//vkDestroyShaderModule(device, fragShaderStageInfo.module, nullptr);
 }

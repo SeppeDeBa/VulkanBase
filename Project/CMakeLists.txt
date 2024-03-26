@@ -28,7 +28,6 @@ set(SOURCES
     "main.cpp"
     "vulkanbase/VulkanBase.h" 
     "vulkanbase/VulkanUtil.h"
-    "vulkanbase/VulkanUtil.cpp"
     # Add other source files here
     "labwork/Week01.cpp"
     "labwork/Week02.cpp" 

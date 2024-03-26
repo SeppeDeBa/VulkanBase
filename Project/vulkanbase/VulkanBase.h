@@ -1,7 +1,9 @@
 #pragma once
 
+#define VK_USE_PLATFORM_WIN32_KHR
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 #include "VulkanUtil.h"
 
@@ -15,14 +17,10 @@
 #include <set>
 #include <limits>
 #include <algorithm>
-
-
-#include  "GP2Shader.h"
+#include "GP2Shader.h"
 #include "GP2CommandPool.h"
 #include "GP2Mesh.h"
 #include "GP2DataBuffer.h"
-
-
 
 const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"
@@ -31,8 +29,6 @@ const std::vector<const char*> validationLayers = {
 const std::vector<const char*> deviceExtensions = {
 	VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
-
-
 
 struct SwapChainSupportDetails {
 	VkSurfaceCapabilitiesKHR capabilities;
@@ -102,9 +98,6 @@ private:
 		vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
 		vkDestroyFence(device, inFlightFence, nullptr);
 
-		//todo check this
-		//vkDestroyCommandPool(device, commandPool, nullptr);
-
 		vertexBuffer.Cleanup();
 		indexBuffer.Cleanup();
 		uniformBuffer.Cleanup();
@@ -149,7 +142,7 @@ private:
 		"shaders/shader.frag.spv"};
 
 	GP2Shader3D m_3DShader{ "shaders/shader3D.vert.spv",
-							"shaders/sharder.frag.spv" };
+							"shaders/shader.frag.spv" };
 
 	// Week 01: 
 	// Actual window

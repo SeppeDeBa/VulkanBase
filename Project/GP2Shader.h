@@ -29,7 +29,7 @@ public:
 
 	virtual VkPipelineVertexInputStateCreateInfo createVertexInputStateInfo();
 	virtual VkPipelineInputAssemblyStateCreateInfo createInputAssemblyStateInfo();
-private:
+protected:
 	virtual VkPipelineShaderStageCreateInfo createFragmentShaderInfo(const VkDevice& vkDevice);
 	virtual VkPipelineShaderStageCreateInfo createVertexShaderInfo(const VkDevice& vkDevice);
 	virtual VkShaderModule createShaderModule(const VkDevice& vkDevice, const std::vector<char>& code);

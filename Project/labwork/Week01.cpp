@@ -6,8 +6,6 @@ void VulkanBase::initWindow() {
 	window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
 }
 
-
-
 void VulkanBase::drawScene() {
 
 	VkBuffer vertexBuffers[] = { vertexBuffer.GetBuffer() };
@@ -21,7 +19,7 @@ void VulkanBase::drawScene() {
 	//VkBuffer vertexBuffers[] = { vertexBuffer };
 	//VkDeviceSize offsets[] = { 0 };
 
-	vkCmdDrawIndexed(commandBuffer.GetVkCommandBuffer(), static_cast<uint32_t>(mesh.GetVertices().size()), 1, 0, 0, 0);
+	vkCmdDrawIndexed(commandBuffer.GetVkCommandBuffer(), static_cast<uint32_t>(mesh.GetIndices().size()), 1, 0, 0, 0);
 
 	//vkCmdDraw(commandBuffer.getVkCommandBuffer(), 6, 1, 0, 0);
 }

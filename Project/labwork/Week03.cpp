@@ -23,6 +23,7 @@ void VulkanBase::createFrameBuffers() {
 }
 
 
+
 void VulkanBase::createRenderPass() {
 	VkAttachmentDescription colorAttachment{};
 	colorAttachment.format = swapChainImageFormat;
@@ -111,18 +112,8 @@ void VulkanBase::createGraphicsPipeline() {
 
 	VkGraphicsPipelineCreateInfo pipelineInfo{};
 
-
-	//VkPipelineShaderStageCreateInfo vertShaderStageInfo = createVertexShaderInfo();
-	//VkPipelineShaderStageCreateInfo fragShaderStageInfo = createFragmentShaderInfo();
-
-	//VkPipelineShaderStageCreateInfo shaderStages[] = {
-	//	vertShaderStageInfo,
-	//	fragShaderStageInfo
-	//};
-
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 	pipelineInfo.stageCount = 2;
-	//pipelineInfo.pStages = &m_GradientShader.getShaderStages()[0];
 	pipelineInfo.pStages = m_GradientShader.getShaderStages().data();//same
 	VkPipelineVertexInputStateCreateInfo is = m_GradientShader.createVertexInputStateInfo() ;
 

@@ -2,17 +2,23 @@
 #include <vulkan/vulkan_core.h>
 #include <vector>
 #include <string>
+#include <glm/glm.hpp>
+
 class GP2Shader
 {
 public:
-	GP2Shader(const std::string& vertexShaderFile, 
-			  const std::string& fragmentShaderFile
+	GP2Shader(const std::string& vertexShaderFile,
+		const std::string& fragmentShaderFile
 	) :m_VertexShaderFile(vertexShaderFile)
-	  ,m_FragmentShaderFile(fragmentShaderFile)
+		, m_FragmentShaderFile(fragmentShaderFile)
 	{
-		
+
 	}
 	virtual ~GP2Shader() = default;
+	GP2Shader(const GP2Shader&) = delete;
+	GP2Shader& operator= (const GP2Shader&) = delete;
+	GP2Shader(const GP2Shader&&) = delete;
+	GP2Shader& operator= (const GP2Shader&&) = delete;
 
 
 
@@ -22,11 +28,6 @@ public:
 	void initialize(const VkDevice& vkDevice);
 	void destroyShaderModules(const VkDevice& vkDevice);
 
-	GP2Shader(const GP2Shader&) = delete;
-	GP2Shader& operator= (const GP2Shader&) = delete;
-	GP2Shader(const GP2Shader&&) = delete;
-	GP2Shader& operator= (const GP2Shader&&) = delete;
-
 	virtual VkPipelineVertexInputStateCreateInfo createVertexInputStateInfo();
 	virtual VkPipelineInputAssemblyStateCreateInfo createInputAssemblyStateInfo();
 protected:
@@ -34,10 +35,10 @@ protected:
 	virtual VkPipelineShaderStageCreateInfo createVertexShaderInfo(const VkDevice& vkDevice);
 	virtual VkShaderModule createShaderModule(const VkDevice& vkDevice, const std::vector<char>& code);
 
-	std::string m_VertexShaderFile;
-	std::string m_FragmentShaderFile;
+	std::string m_VertexShaderFile{};
+	std::string m_FragmentShaderFile{};
 
-	std::vector<VkPipelineShaderStageCreateInfo> m_ShaderStages;
+	std::vector<VkPipelineShaderStageCreateInfo> m_ShaderStages{};
 
 
 };

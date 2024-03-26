@@ -46,15 +46,11 @@ void VulkanBase::drawFrame() {
 	commandBuffer.reset();
 	commandBuffer.beginRecording();
 
-
-
 	recordCommandBuffer(imageIndex);
-	
 	commandBuffer.endRecording();
 
 	//vkResetCommandBuffer(commandBuffer.getVkCommandBuffer(), /*VkCommandBufferResetFlagBits*/ 0);
 	//recordCommandBuffer(commandBuffer.getVkCommandBuffer(), imageIndex, vertexBuffer.GetVertexBuffer());
-
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 

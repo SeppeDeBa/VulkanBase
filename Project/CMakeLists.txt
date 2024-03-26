@@ -36,10 +36,10 @@ set(SOURCES
     "labwork/Week04.cpp" 
     "labwork/Week05.cpp"
     "labwork/Week06.cpp"
- "GP2Shader.h" "GP2Shader.cpp" "shaders/Vertex.h" "GP2Vertex.h" "GP2CommandPool.cpp" "GP2CommandBuffer.cpp" "GP2Mesh.h" )
+"GP2Shader.cpp" "GP2CommandPool.cpp" "GP2CommandBuffer.cpp" "GP2Mesh.h"  "GP2DataBuffer.cpp")
 
 # Create the executable
-add_executable(${PROJECT_NAME} ${SOURCES} ${GLSL_SOURCE_FILES} )
+add_executable(${PROJECT_NAME} ${SOURCES} ${GLSL_SOURCE_FILES}   "vulkanbase/VulkanUtil.cpp" "labwork/Week03.cpp" )
 add_dependencies(${PROJECT_NAME} Shaders)
 # Link libraries
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

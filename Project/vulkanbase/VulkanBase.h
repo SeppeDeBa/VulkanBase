@@ -16,10 +16,11 @@
 #include <limits>
 #include <algorithm>
 
+
 #include  "GP2Shader.h"
 #include "GP2CommandPool.h"
 #include "GP2Mesh.h"
-
+#include "GP2DataBuffer.h"
 
 
 
@@ -66,12 +67,21 @@ private:
 		// week 03
 		m_GradientShader.initialize(device);
 		createRenderPass();
+		m_3DShader.CreateDescriptorSetLayout(device);
 		createGraphicsPipeline();
 		createFrameBuffers();
 		// week 02
 		commandPool.Initialize(device, findQueueFamilies(physicalDevice));
-		vertexBuffer.Initialize(device, physicalDevice);
-		vertexBuffer.CreateVertexBuffer(mesh);
+		//VBuffer
+		vertexBuffer.Initialize(device, physicalDevice, commandPool.GetCommandPool(), graphicsQueue);
+		vertexBuffer.CreateBuffer(mesh);
+		//IndexBuffer
+		indexBuffer.Initialize(device, physicalDevice, commandPool.GetCommandPool(), graphicsQueue);
+		indexBuffer.CreateBuffer(mesh);
+		//uniformBuffer
+		uniformBuffer.Initialize(device, physicalDevice, commandPool.GetCommandPool(), graphicsQueue);
+		uniformBuffer.CreateBuffer(mesh);
+		//comm buffer
 		commandBuffer = commandPool.createCommandBuffer();
 
 		// week 06
@@ -96,6 +106,8 @@ private:
 		//vkDestroyCommandPool(device, commandPool, nullptr);
 
 		vertexBuffer.Cleanup();
+		indexBuffer.Cleanup();
+		uniformBuffer.Cleanup();
 		commandPool.Destroy();
 
 		for (auto framebuffer : swapChainFramebuffers) {
@@ -104,6 +116,7 @@ private:
 
 		vkDestroyPipeline(device, graphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+		m_3DShader.Cleanup(device);
 		vkDestroyRenderPass(device, renderPass, nullptr);
 
 		for (auto imageView : swapChainImageViews) {
@@ -135,6 +148,9 @@ private:
 		"shaders/shader.vert.spv",
 		"shaders/shader.frag.spv"};
 
+	GP2Shader3D m_3DShader{ "shaders/shader3D.vert.spv",
+							"shaders/sharder.frag.spv" };
+
 	// Week 01: 
 	// Actual window
 	// simple fragment + vertex shader creation functions
@@ -156,6 +172,8 @@ private:
 	GP2CommandBuffer commandBuffer;
 	GP2Mesh mesh{};
 	GP2VertexBuffer vertexBuffer;
+	GP2IndexBuffer indexBuffer;
+	GP2UniformBuffer uniformBuffer;
 
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
@@ -163,7 +181,7 @@ private:
 	void drawFrame(uint32_t imageIndex);
 	//void createCommandBuffer();
 	//void createCommandPool(); 
-	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkBuffer vertexBuffer);
+	void recordCommandBuffer(uint32_t imageIndex);
 
 	//void CreateVertexBuffer();
 

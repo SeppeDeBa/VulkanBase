@@ -43,85 +43,123 @@ class GP2Mesh
 {
 public:
 	const std::vector<Vertex>& GetVertices() const { return vertices; }
+	const std::vector<uint16_t>& GetIndices() const
+	{
+		return indices;
+		//return indices; void GP2Shader3D::CreateDescriptorSetLayout(const VkDevice & vkDevice)
+		//{
+		//	VkDescriptorSetLayoutBinding uboLayoutBinding{};
+		//	uboLayoutBinding.binding = 0;
+		//	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		//	uboLayoutBinding.descriptorCount = 1;
 
+		//	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+		//	uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
+
+		//	VkPipelineLayout pipelineLayout;
+
+		//	VkDescriptorSetLayoutCreateInfo layoutInfo{};
+		//	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		//	layoutInfo.bindingCount = 1;
+		//	layoutInfo.pBindings = &uboLayoutBinding;
+
+		//	if (vkCreateDescriptorSetLayout(vkDevice, &layoutInfo, nullptr, &m_DescriptorSetLayout) != VK_SUCCESS) {
+		//		throw std::runtime_error("failed to create descriptor set layout!");
+		//	}
+
+		//	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+		//	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+		//	pipelineLayoutInfo.setLayoutCount = 1;
+		//	pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
+		//}
+
+		//void GP2Shader3D::Cleanup(const VkDevice & vkDevice)
+		//{
+		//	vkDestroyDescriptorSetLayout(vkDevice, m_DescriptorSetLayout, nullptr);
+		//}
+	}
 private:
 	const std::vector<Vertex> vertices = {
-	{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-	{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-	{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}} };
+		{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+		{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+		{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+		{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+	};
+	const std::vector<uint16_t> indices = { 0, 1, 2, 2, 3, 0 };
 };
 
-class GP2VertexBuffer
-{
-public:
-	void Cleanup()
-	{
-		vkDestroyBuffer(m_Device, m_VertexBuffer, nullptr);
-		vkFreeMemory(m_Device, m_VertexBufferMemory, nullptr);
-	}
-
-	const VkBuffer& GetVertexBuffer() const { return m_VertexBuffer; }
-	const VkDeviceMemory& GetVertexBufferMemory() const { return m_VertexBufferMemory; }
-
-	void Initialize(const VkDevice& device, const VkPhysicalDevice& physDevice)
-	{
-		m_Device = device;
-		m_PhysicalDevice = physDevice;
-	}
-
-	void CreateVertexBuffer(const GP2Mesh& mesh)
-	{
-		VkBufferCreateInfo bufferInfo{};
-		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-		bufferInfo.size = sizeof(mesh.GetVertices()[0]) * mesh.GetVertices().size();
-		bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-		if (vkCreateBuffer(m_Device, &bufferInfo, nullptr, &m_VertexBuffer) != VK_SUCCESS)
-		{
-			throw std::runtime_error("failed to create vertex buffer!");
-		}
-
-		VkMemoryRequirements memRequirements;
-		vkGetBufferMemoryRequirements(m_Device, m_VertexBuffer, &memRequirements); // Get memory requirements
-
-		VkMemoryAllocateInfo allocInfo{};
-		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-		allocInfo.allocationSize = memRequirements.size;
-		allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-		if (vkAllocateMemory(m_Device, &allocInfo, nullptr, &m_VertexBufferMemory) != VK_SUCCESS)
-		{
-			throw std::runtime_error("failed to allocate vertex buffer memory!");
-		}
-
-		vkBindBufferMemory(m_Device, m_VertexBuffer, m_VertexBufferMemory, 0);
-
-		void* data;
-		vkMapMemory(m_Device, m_VertexBufferMemory, 0, bufferInfo.size, 0, &data);
-		memcpy(data, mesh.GetVertices().data(), (size_t)bufferInfo.size);
-		vkUnmapMemory(m_Device, m_VertexBufferMemory);
-	}
-
-private:
-	VkBuffer m_VertexBuffer;
-	VkDevice m_Device;
-	VkPhysicalDevice m_PhysicalDevice;
-	VkDeviceMemory m_VertexBufferMemory;
-
-	uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
-	{
-		VkPhysicalDeviceMemoryProperties memProperties;
-		vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &memProperties);
-
-		for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
-		{
-			if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
-			{
-				return i;
-			}
-		}
-	}
-
-};
+//class GP2VertexBuffer
+//{
+//public:
+//	void Cleanup()
+//	{
+//		vkDestroyBuffer(m_Device, m_VertexBuffer, nullptr);
+//		vkFreeMemory(m_Device, m_VertexBufferMemory, nullptr);
+//	}
+//
+//	const VkBuffer& GetVertexBuffer() const { return m_VertexBuffer; }
+//	const VkDeviceMemory& GetVertexBufferMemory() const { return m_VertexBufferMemory; }
+//
+//	void Initialize(const VkDevice& device, const VkPhysicalDevice& physDevice)
+//	{
+//		m_Device = device;
+//		m_PhysicalDevice = physDevice;
+//	}
+//
+//	void CreateVertexBuffer(const GP2Mesh& mesh)
+//	{
+//		VkBufferCreateInfo bufferInfo{};
+//		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+//		bufferInfo.size = sizeof(mesh.GetVertices()[0]) * mesh.GetVertices().size();
+//		bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+//		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+//
+//		if (vkCreateBuffer(m_Device, &bufferInfo, nullptr, &m_VertexBuffer) != VK_SUCCESS)
+//		{
+//			throw std::runtime_error("failed to create vertex buffer!");
+//		}
+//
+//		VkMemoryRequirements memRequirements;
+//		vkGetBufferMemoryRequirements(m_Device, m_VertexBuffer, &memRequirements); // Get memory requirements
+//
+//		VkMemoryAllocateInfo allocInfo{};
+//		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+//		allocInfo.allocationSize = memRequirements.size;
+//		allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+//
+//		if (vkAllocateMemory(m_Device, &allocInfo, nullptr, &m_VertexBufferMemory) != VK_SUCCESS)
+//		{
+//			throw std::runtime_error("failed to allocate vertex buffer memory!");
+//		}
+//
+//		vkBindBufferMemory(m_Device, m_VertexBuffer, m_VertexBufferMemory, 0);
+//
+//		void* data;
+//		vkMapMemory(m_Device, m_VertexBufferMemory, 0, bufferInfo.size, 0, &data);
+//		memcpy(data, mesh.GetVertices().data(), (size_t)bufferInfo.size);
+//		vkUnmapMemory(m_Device, m_VertexBufferMemory);
+//	}
+//
+//private:
+//	VkBuffer m_VertexBuffer;
+//	VkDevice m_Device;
+//	VkPhysicalDevice m_PhysicalDevice;
+//	VkDeviceMemory m_VertexBufferMemory;
+//
+//	uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+//	{
+//		VkPhysicalDeviceMemoryProperties memProperties;
+//		vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &memProperties);
+//
+//		for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
+//		{
+//			if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
+//			{
+//				return i;
+//			}
+//		}
+//	}
+//
+//};
 

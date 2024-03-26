@@ -1,7 +1,7 @@
 #include "vulkanbase/VulkanBase.h"
 #include "GP2Mesh.h"
 
-void VulkanBase::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkBuffer vertexBuffer)
+void VulkanBase::recordCommandBuffer(uint32_t imageIndex)
 {
 	//vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
@@ -21,9 +21,9 @@ void VulkanBase::drawFrame(uint32_t imageIndex) {
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
 
-	vkCmdBeginRenderPass(commandBuffer.getVkCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+	vkCmdBeginRenderPass(commandBuffer.GetVkCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-	vkCmdBindPipeline(commandBuffer.getVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+	vkCmdBindPipeline(commandBuffer.GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
 	VkViewport viewport{};
 	viewport.x = 0.0f;
@@ -32,15 +32,19 @@ void VulkanBase::drawFrame(uint32_t imageIndex) {
 	viewport.height = (float)swapChainExtent.height;
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
-	vkCmdSetViewport(commandBuffer.getVkCommandBuffer(), 0, 1, &viewport);
+	vkCmdSetViewport(commandBuffer.GetVkCommandBuffer(), 0, 1, &viewport);
 
 	VkRect2D scissor{};
 	scissor.offset = { 0, 0 };
 	scissor.extent = swapChainExtent;
-	vkCmdSetScissor(commandBuffer.getVkCommandBuffer(), 0, 1, &scissor);
+	vkCmdSetScissor(commandBuffer.GetVkCommandBuffer(), 0, 1, &scissor);
 
 	drawScene();
-	vkCmdEndRenderPass(commandBuffer.getVkCommandBuffer());
+	vkCmdEndRenderPass(commandBuffer.GetVkCommandBuffer());
+
+	//if (vkEndCommandBuffer(commandBuffer.GetVkCommandBuffer()) != VK_SUCCESS) {
+	//	throw std::runtime_error("failed to record command buffer!");
+	//}
 }
 
 QueueFamilyIndices VulkanBase::findQueueFamilies(VkPhysicalDevice device) {

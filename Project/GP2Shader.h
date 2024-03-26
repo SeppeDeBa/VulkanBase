@@ -12,11 +12,11 @@ public:
 	{
 		
 	}
-	~GP2Shader() = default;
+	virtual ~GP2Shader() = default;
 
 
-	std::vector<VkPipelineShaderStageCreateInfo>& getShaderStages() { return m_ShaderStages; };
 
+	virtual const std::vector<VkPipelineShaderStageCreateInfo>& getShaderStages() { return m_ShaderStages; };
 
 
 	void initialize(const VkDevice& vkDevice);
@@ -27,12 +27,12 @@ public:
 	GP2Shader(const GP2Shader&&) = delete;
 	GP2Shader& operator= (const GP2Shader&&) = delete;
 
-	VkPipelineVertexInputStateCreateInfo createVertexInputStateInfo();
-	VkPipelineInputAssemblyStateCreateInfo createInputAssemblyStateInfo();
+	virtual VkPipelineVertexInputStateCreateInfo createVertexInputStateInfo();
+	virtual VkPipelineInputAssemblyStateCreateInfo createInputAssemblyStateInfo();
 private:
-	VkPipelineShaderStageCreateInfo createFragmentShaderInfo(const VkDevice& vkDevice);
-	VkPipelineShaderStageCreateInfo createVertexShaderInfo(const VkDevice& vkDevice);
-	VkShaderModule createShaderModule(const VkDevice& vkDevice, const std::vector<char>& code);
+	virtual VkPipelineShaderStageCreateInfo createFragmentShaderInfo(const VkDevice& vkDevice);
+	virtual VkPipelineShaderStageCreateInfo createVertexShaderInfo(const VkDevice& vkDevice);
+	virtual VkShaderModule createShaderModule(const VkDevice& vkDevice, const std::vector<char>& code);
 
 	std::string m_VertexShaderFile;
 	std::string m_FragmentShaderFile;
@@ -40,4 +40,18 @@ private:
 	std::vector<VkPipelineShaderStageCreateInfo> m_ShaderStages;
 
 
+};
+
+class GP2Shader3D : public GP2Shader //help received here too in week 5 from Siebe Boeckx after being sick!
+{
+public:
+	GP2Shader3D(const std::string& vertexShaderFile, const std::string& fragmentShaderFile)
+		:GP2Shader(vertexShaderFile, fragmentShaderFile)
+	{
+	}
+
+	void CreateDescriptorSetLayout(const VkDevice& vkDevice);
+	void Cleanup(const VkDevice& vkDevice);
+private:
+	VkDescriptorSetLayout m_DescriptorSetLayout{ nullptr };
 };

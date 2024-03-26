@@ -12,7 +12,7 @@ public:
 		m_CommandBuffer = buffer;
 	}
 
-	VkCommandBuffer getVkCommandBuffer()
+	VkCommandBuffer GetVkCommandBuffer()
 	{
 		return m_CommandBuffer;
 	}

@@ -48,7 +48,7 @@ void VulkanBase::drawFrame() {
 
 
 
-	recordCommandBuffer(commandBuffer.getVkCommandBuffer(), imageIndex, vertexBuffer.GetVertexBuffer());
+	recordCommandBuffer(imageIndex);
 	
 	commandBuffer.endRecording();
 
@@ -65,7 +65,7 @@ void VulkanBase::drawFrame() {
 	submitInfo.pWaitDstStageMask = waitStages;
 
 	submitInfo.commandBufferCount = 1;
-	VkCommandBuffer tempBuffer{ commandBuffer.getVkCommandBuffer() };
+	VkCommandBuffer tempBuffer{ commandBuffer.GetVkCommandBuffer() };
 	submitInfo.pCommandBuffers = &tempBuffer;
 
 	VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };

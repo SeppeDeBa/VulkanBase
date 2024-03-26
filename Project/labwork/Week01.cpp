@@ -4,6 +4,15 @@ void VulkanBase::initWindow() {
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+
+
+	// glfwSetWindowUserPointer(window, this);
+	//[](GLFWwindow* window, int key, int scancode, int action, int mods) //-> cannot capture data.
+	//[](GLFWwindow*, double xpos, double ypos)//
+	//no mouse movement event
+	//why not normalize? Theres a problem when normals point in different directions.
+
+
 }
 
 void VulkanBase::drawScene() {

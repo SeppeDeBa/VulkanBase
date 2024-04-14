@@ -30,9 +30,9 @@ public:
 		poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
 		//check what can be freed, default flag value can be 0
-		VkDescriptorPool  descriptorPool;
+		//VkDescriptorPool  descriptorPool;
 
-		if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
+		if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &m_DescriptorPool) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create descriptor pool!");
 		}
 		m_Created = true;

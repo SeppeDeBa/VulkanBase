@@ -62,10 +62,12 @@ private:
 		createImageViews();
 
 		// week 03
-		m_GradientShader.initialize(device);
-		createRenderPass();
+		//m_GradientShader.initialize(device);
+		m_3DShader.initialize(device);
 		m_3DShader.CreateDescriptorSetLayout(device);
+		createRenderPass();
 		createGraphicsPipeline();
+		createGraphicsPipeline3D();
 		createFrameBuffers();
 		// week 02
 		commandPool.Initialize(device, findQueueFamilies(physicalDevice));
@@ -209,6 +211,7 @@ private:
 	void createFrameBuffers();
 	void createRenderPass();
 	void createGraphicsPipeline();
+	void createGraphicsPipeline3D();
 	void createUniformBuffers();
 
 

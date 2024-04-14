@@ -78,6 +78,10 @@ private:
 		//uniformBuffer
 		uniformBuffer.Initialize(device, physicalDevice, commandPool.GetCommandPool(), graphicsQueue);
 		uniformBuffer.CreateBuffer(mesh);
+		//descriptorPool
+		descriptorPool.createDescriptorPool(device);
+		descriptorPool.createDescriptorSets(m_3DShader.GetDescriptorSetLayout(), uniformBuffer);
+
 		//comm buffer
 		commandBuffer = commandPool.createCommandBuffer();
 
@@ -99,15 +103,21 @@ private:
 		vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
 		vkDestroyFence(device, inFlightFence, nullptr);
 
+		//cleanup buffers
 		vertexBuffer.Cleanup();
 		indexBuffer.Cleanup();
 		uniformBuffer.Cleanup();
-		commandPool.Destroy();
 
+		//cleanup pools
+		commandPool.Destroy();
+		descriptorPool.cleanup(); //todo:fix naming convention
+
+		//framebuffer cleanup
 		for (auto framebuffer : swapChainFramebuffers) {
 			vkDestroyFramebuffer(device, framebuffer, nullptr);
 		}
 
+		//cleaning ye ole pipes
 		vkDestroyPipeline(device, graphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
 		m_3DShader.Cleanup(device);

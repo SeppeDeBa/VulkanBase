@@ -53,6 +53,7 @@ public:
 
 	void CreateDescriptorSetLayout(const VkDevice& vkDevice);
 	void Cleanup(const VkDevice& vkDevice);
+	const VkDescriptorSetLayout& GetDescriptorSetLayout() const { return m_DescriptorSetLayout; };
 private:
 	VkDescriptorSetLayout m_DescriptorSetLayout{ nullptr };
 };

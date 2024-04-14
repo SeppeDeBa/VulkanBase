@@ -66,7 +66,7 @@ private:
 		m_3DShader.initialize(device);
 		m_3DShader.CreateDescriptorSetLayout(device);
 		createRenderPass();
-		createGraphicsPipeline();
+		//createGraphicsPipeline();
 		createGraphicsPipeline3D();
 		createFrameBuffers();
 		// week 02

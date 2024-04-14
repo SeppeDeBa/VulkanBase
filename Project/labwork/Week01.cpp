@@ -34,7 +34,6 @@ void VulkanBase::drawScene() {
 }
 
 //got idea to make a 3DDrawScene from Siebe Boeckx, was only idea, implemented by myself
-
 void VulkanBase::draw3DScene(uint32_t imageIndex)
 
 {	VkBuffer vertexBuffers[] = { vertexBuffer.GetBuffer() };

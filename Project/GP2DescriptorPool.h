@@ -32,7 +32,7 @@ public:
 		//check what can be freed, default flag value can be 0
 		//VkDescriptorPool  descriptorPool;
 
-		if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &m_DescriptorPool) != VK_SUCCESS) {
+		if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &m_DescriptorPool) != VK_SUCCESS) { //todo problem here
 			throw std::runtime_error("failed to create descriptor pool!");
 		}
 		m_Created = true;

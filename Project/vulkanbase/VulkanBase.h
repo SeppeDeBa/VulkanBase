@@ -165,8 +165,13 @@ private:
 	GP2CommandBuffer commandBuffer;
 	GP2Mesh mesh{};
 	GP2VertexBuffer vertexBuffer;
+
 	GP2IndexBuffer indexBuffer;
 	GP2UniformBuffer uniformBuffer;
+
+	std::vector<VkBuffer> uniformBuffers;
+	std::vector<VkDeviceMemory> uniformBuffersMemory;
+	std::vector<void*> uniformBuffersMapped;
 
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
@@ -191,6 +196,8 @@ private:
 	void createFrameBuffers();
 	void createRenderPass();
 	void createGraphicsPipeline();
+	void createUniformBuffers();
+
 
 	// Week 04
 	// Swap chain and image view support

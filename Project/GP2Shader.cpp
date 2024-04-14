@@ -113,5 +113,6 @@ void GP2Shader3D::CreateDescriptorSetLayout(const VkDevice& vkDevice) //help rec
 
 void GP2Shader3D::Cleanup(const VkDevice& vkDevice)
 {
+	
 	vkDestroyDescriptorSetLayout(vkDevice, m_DescriptorSetLayout, nullptr);
 }

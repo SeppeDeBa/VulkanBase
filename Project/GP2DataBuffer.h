@@ -191,8 +191,9 @@ public:
 		{
 			delete uniformBufferMapped;
 		}
+		
 	}
-
+	 
 	virtual void CreateBuffer(const GP2Mesh&) override
 	{
 		VkDeviceSize bufferSize = sizeof(UniformBufferObject);
@@ -206,7 +207,7 @@ public:
 														, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT
 														, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 														, bufferSize };
-
+			
 			//void* pData;
 			//vkMapMemory(m_Device, uniformBufferInfos[i]->GetBufferMemory(), 0, bufferSize, 0, &uniformBuffersMapped[i]);
 			//uniformBuffersMapped[i] = static_cast<VkDeviceMemory*>(pData);
@@ -232,3 +233,5 @@ private:
 	std::vector<GP2DataBuffer*> uniformBufferInfos{};
 	std::vector<VkDeviceMemory*> uniformBuffersMapped{};
 };
+
+

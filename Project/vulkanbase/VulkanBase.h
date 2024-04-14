@@ -21,6 +21,7 @@
 #include "GP2CommandPool.h"
 #include "GP2Mesh.h"
 #include "GP2DataBuffer.h"
+#include "GP2DescriptorPool.h"
 
 const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"
@@ -155,7 +156,8 @@ private:
 
 
 
-	void drawScene();
+	void drawScene();;
+	void draw3DScene(uint32_t imageIndex);
 
 	// Week 02
 	// Queue families
@@ -168,10 +170,11 @@ private:
 
 	GP2IndexBuffer indexBuffer;
 	GP2UniformBuffer uniformBuffer;
+	GP2DescriptorPool descriptorPool;
 
-	std::vector<VkBuffer> uniformBuffers;
-	std::vector<VkDeviceMemory> uniformBuffersMemory;
-	std::vector<void*> uniformBuffersMapped;
+	//std::vector<GP2UniformBuffer> uniformBuffers;
+	//std::vector<VkDeviceMemory> uniformBuffersMemory;
+	//std::vector<void*> uniformBuffersMapped;
 
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 

@@ -183,55 +183,62 @@ class GP2UniformBuffer : public GP2BufferBase
 public:
 	virtual void Cleanup() override
 	{
-		for (auto uniformBuffer : uniformBufferInfos)
+		for (auto uniformBuffer : m_UniformBufferInfos)
 		{
 			delete uniformBuffer;
 		}
-		for (auto uniformBufferMapped : uniformBuffersMapped)
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
-			delete uniformBufferMapped;
+			m_UniformBufferInfos[i]->Destroy();
 		}
-		
+		//is this needed?
+		//for (auto uniformBufferMapped : uniformBuffersMapped)
+		//{
+		//	delete uniformBufferMapped;
+		//}
 	}
-	 
+
 	virtual void CreateBuffer(const GP2Mesh&) override
 	{
 		VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
-		uniformBufferInfos.resize(MAX_FRAMES_IN_FLIGHT);
-		uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
-
+		m_UniformBufferInfos.resize(MAX_FRAMES_IN_FLIGHT);
+		m_UniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+		m_UniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-			uniformBufferInfos[i] = new GP2DataBuffer{ m_Device
+			m_UniformBufferInfos[i] = new GP2DataBuffer{ m_Device
 														, m_PhysicalDevice
 														, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT
 														, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 														, bufferSize };
+
 			
-			//void* pData;
-			//vkMapMemory(m_Device, uniformBufferInfos[i]->GetBufferMemory(), 0, bufferSize, 0, &uniformBuffersMapped[i]);
+			vkMapMemory(m_Device, m_UniformBufferInfos[i]->GetBufferMemory(), 0, bufferSize, 0,
+				&m_UniformBuffersMapped[i]);
 			//uniformBuffersMapped[i] = static_cast<VkDeviceMemory*>(pData);
 		}
 	}
 
-	//void Update(uint32_t currentImage)
-	//{
-	//	static auto startTime = std::chrono::high_resolution_clock::now();
-	//
-	//	auto currentTime = std::chrono::high_resolution_clock::now();
-	//	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-	//
-	//	UniformBufferObject ubo{};
-	//	ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	//	ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	//	ubo.proj = glm::perspective(glm::radians(45.0f), WIDTH / static_cast<float>(HEIGHT), 0.1f, 10.0f);
-	//	ubo.proj[1][1] *= -1;
-	//
-	//	memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
-	//}
+	void UpdateUniformBuffer(uint32_t currentImage)
+	{
+		static auto startTime = std::chrono::high_resolution_clock::now();
+	
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+	
+		UniformBufferObject ubo{};
+		ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		ubo.proj = glm::perspective(glm::radians(45.0f), WIDTH / static_cast<float>(HEIGHT), 0.1f, 10.0f);
+		ubo.proj[1][1] *= -1;
+	
+		memcpy(m_UniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+	}
+
+	const std::vector<GP2DataBuffer*>& GetUniformBufferInfos() const { return m_UniformBufferInfos; };
 private:
-	std::vector<GP2DataBuffer*> uniformBufferInfos{};
-	std::vector<VkDeviceMemory*> uniformBuffersMapped{};
+	std::vector<GP2DataBuffer*> m_UniformBufferInfos{};
+	std::vector<void*> m_UniformBuffersMapped{};
+	std::vector<VkDeviceMemory> m_UniformBuffersMemory{};
 };
-
-

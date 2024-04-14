@@ -42,8 +42,8 @@ protected:
 
 
 };
-
-class GP2Shader3D : public GP2Shader //help received here too in week 5 from Siebe Boeckx after being sick!
+ 
+class GP2Shader3D : public GP2Shader  
 {
 public:
 	GP2Shader3D(const std::string& vertexShaderFile, const std::string& fragmentShaderFile)

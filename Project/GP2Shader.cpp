@@ -83,7 +83,7 @@ VkShaderModule GP2Shader::createShaderModule(const VkDevice& vkDevice, const std
 }
 
 
-void GP2Shader3D::CreateDescriptorSetLayout(const VkDevice& vkDevice) //help received from Siebe Boecx here after being sick and not being able to attend class
+void GP2Shader3D::CreateDescriptorSetLayout(const VkDevice& vkDevice) 
 {
 	VkDescriptorSetLayoutBinding uboLayoutBinding{};
 	uboLayoutBinding.binding = 0;
@@ -113,6 +113,5 @@ void GP2Shader3D::CreateDescriptorSetLayout(const VkDevice& vkDevice) //help rec
 
 void GP2Shader3D::Cleanup(const VkDevice& vkDevice)
 {
-	
 	vkDestroyDescriptorSetLayout(vkDevice, m_DescriptorSetLayout, nullptr);
 }

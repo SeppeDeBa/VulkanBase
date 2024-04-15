@@ -17,7 +17,7 @@ public:
 	void Destroy();
 
 	const VkCommandPool& GetCommandPool() const { return m_CommandPool; };
-	GP2CommandBuffer createCommandBuffer() const;
+	std::vector<GP2CommandBuffer> createCommandBuffers() const;
 
 private:
 	VkCommandPool m_CommandPool;

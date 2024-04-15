@@ -1,7 +1,5 @@
 #pragma once
-#ifndef MAX_FRAMES_IN_FLIGHT
-#define MAX_FRAMES_IN_FLIGHT 2
-#endif // !MAX_FRAMES_IN_FLIGHT
+
 #define VK_USE_PLATFORM_WIN32_KHR
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -39,8 +37,19 @@ struct SwapChainSupportDetails {
 	std::vector<VkPresentModeKHR> presentModes;
 };
 
+
+
 class VulkanBase {
+
 public:
+static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
+
+	auto app = reinterpret_cast<VulkanBase*>(glfwGetWindowUserPointer(window));
+	app->framebufferResized = true;
+
+}
+
+
 	void run() {
 		initWindow();
 		initVulkan();
@@ -87,7 +96,7 @@ private:
 		descriptorPool.createDescriptorSets(m_3DShader.GetDescriptorSetLayout(), uniformBuffer);
 
 		//comm buffer
-		commandBuffer = commandPool.createCommandBuffer();
+		commandBuffers = commandPool.createCommandBuffers();
 
 		// week 06
 		createSyncObjects();
@@ -103,10 +112,14 @@ private:
 	}
 
 	void cleanup() {
-		vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
-		vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
-		vkDestroyFence(device, inFlightFence, nullptr);
 
+		cleanupSwapChain();
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
+			vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
+			vkDestroyFence(device, inFlightFences[i], nullptr);
+		}
 		//cleanup buffers
 		vertexBuffer.Cleanup();
 		indexBuffer.Cleanup();
@@ -116,25 +129,17 @@ private:
 		commandPool.Destroy();
 		descriptorPool.cleanup(); //todo:fix naming convention
 
-		//framebuffer cleanup
-		for (auto framebuffer : swapChainFramebuffers) {
-			vkDestroyFramebuffer(device, framebuffer, nullptr);
-		}
-
 		//cleaning ye ole pipes
 		vkDestroyPipeline(device, graphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
 		m_3DShader.Cleanup(device);
 		vkDestroyRenderPass(device, renderPass, nullptr);
 
-		for (auto imageView : swapChainImageViews) {
-			vkDestroyImageView(device, imageView, nullptr);
-		}
 
 		if (enableValidationLayers) {
 			DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
 		}
-		vkDestroySwapchainKHR(device, swapChain, nullptr);
+		
 		vkDestroyDevice(device, nullptr);
 
 		vkDestroySurfaceKHR(instance, surface, nullptr);
@@ -142,6 +147,50 @@ private:
 
 		glfwDestroyWindow(window);
 		glfwTerminate();
+#pragma region backup
+		//backup
+		//for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+		//	vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
+		//	vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
+		//	vkDestroyFence(device, inFlightFences[i], nullptr);
+		//}
+		////cleanup buffers
+		//vertexBuffer.Cleanup();
+		//indexBuffer.Cleanup();
+		//uniformBuffer.Cleanup();
+
+		////cleanup pools
+		//commandPool.Destroy();
+		//descriptorPool.cleanup(); //todo:fix naming convention
+
+
+		////framebuffer cleanup
+		//for (auto framebuffer : swapChainFramebuffers) {
+		//	vkDestroyFramebuffer(device, framebuffer, nullptr);
+		//}
+
+		////cleaning ye ole pipes
+		//vkDestroyPipeline(device, graphicsPipeline, nullptr);
+		//vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+		//m_3DShader.Cleanup(device);
+		//vkDestroyRenderPass(device, renderPass, nullptr);
+
+		//for (auto imageView : swapChainImageViews) {
+		//	vkDestroyImageView(device, imageView, nullptr);
+		//}
+
+		//if (enableValidationLayers) {
+		//	DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
+		//}
+		//vkDestroySwapchainKHR(device, swapChain, nullptr);
+		//vkDestroyDevice(device, nullptr);
+
+		//vkDestroySurfaceKHR(instance, surface, nullptr);
+		//vkDestroyInstance(instance, nullptr);
+
+		//glfwDestroyWindow(window);
+		//glfwTerminate();
+#pragma endregion
 	}
 
 
@@ -178,7 +227,7 @@ private:
 	// CommandBuffer concept
 
 	GP2CommandPool commandPool;
-	GP2CommandBuffer commandBuffer;
+	std::vector<GP2CommandBuffer> commandBuffers;
 	GP2Mesh mesh{};
 	GP2VertexBuffer vertexBuffer;
 
@@ -186,6 +235,8 @@ private:
 	GP2UniformBuffer uniformBuffer;
 	GP2DescriptorPool descriptorPool;
 
+	uint32_t currentFrame = 0;
+	//uint32_t imageIndex = 0;
 	//std::vector<GP2UniformBuffer> uniformBuffers;
 	//std::vector<VkDeviceMemory> uniformBuffersMemory;
 	//std::vector<void*> uniformBuffersMapped;
@@ -232,6 +283,9 @@ private:
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	void createSwapChain();
+	void recreateSwapChain();
+	void cleanupSwapChain();
+
 	void createImageViews();
 
 	// Week 05 
@@ -253,9 +307,10 @@ private:
 	VkDevice device = VK_NULL_HANDLE;
 	VkSurfaceKHR surface;
 
-	VkSemaphore imageAvailableSemaphore;
-	VkSemaphore renderFinishedSemaphore;
-	VkFence inFlightFence; 
+	std::vector<VkSemaphore> imageAvailableSemaphores;
+	std::vector<VkSemaphore> renderFinishedSemaphores;
+	std::vector<VkFence> inFlightFences;
+	bool framebufferResized = false; //doing assignment creation bc the tutorial does it that way.
 
 	void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 	void setupDebugMessenger();

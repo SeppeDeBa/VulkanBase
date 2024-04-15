@@ -21,9 +21,9 @@ void VulkanBase::drawFrame(uint32_t imageIndex) {
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
 
-	vkCmdBeginRenderPass(commandBuffer.GetVkCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+	vkCmdBeginRenderPass(commandBuffers[currentFrame].GetVkCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-	vkCmdBindPipeline(commandBuffer.GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+	vkCmdBindPipeline(commandBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
 	VkViewport viewport{};
 	viewport.x = 0.0f;
@@ -32,19 +32,20 @@ void VulkanBase::drawFrame(uint32_t imageIndex) {
 	viewport.height = (float)swapChainExtent.height;
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
-	vkCmdSetViewport(commandBuffer.GetVkCommandBuffer(), 0, 1, &viewport);
+	vkCmdSetViewport(commandBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, &viewport);
 
 	VkRect2D scissor{};
 	scissor.offset = { 0, 0 };
 	scissor.extent = swapChainExtent;
-	vkCmdSetScissor(commandBuffer.GetVkCommandBuffer(), 0, 1, &scissor);
+	vkCmdSetScissor(commandBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, &scissor);
 
 	draw3DScene(imageIndex);
-	vkCmdEndRenderPass(commandBuffer.GetVkCommandBuffer());
+	vkCmdEndRenderPass(commandBuffers[currentFrame].GetVkCommandBuffer());
 
 	//if (vkEndCommandBuffer(commandBuffer.GetVkCommandBuffer()) != VK_SUCCESS) {
 	//	throw std::runtime_error("failed to record command buffer!");
 	//}
+	
 }
 
 QueueFamilyIndices VulkanBase::findQueueFamilies(VkPhysicalDevice device) {

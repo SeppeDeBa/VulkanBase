@@ -39,7 +39,7 @@ VkPipelineShaderStageCreateInfo GP2Shader::createVertexShaderInfo(const VkDevice
 	vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
 	vertShaderStageInfo.module = vertShaderModule;
 	vertShaderStageInfo.pName = "main";
-	return vertShaderStageInfo;
+	return vertShaderStageInfo; 
 }
 
 VkPipelineVertexInputStateCreateInfo GP2Shader::createVertexInputStateInfo()

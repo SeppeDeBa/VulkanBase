@@ -50,7 +50,7 @@ void VulkanBase::drawFrame() {
 	commandBuffer.endRecording();
 
 	uniformBuffer.UpdateUniformBuffer(imageIndex);
-
+	
 	//vkResetCommandBuffer(commandBuffer.getVkCommandBuffer(), /*VkCommandBufferResetFlagBits*/ 0);
 	//recordCommandBuffer(commandBuffer.getVkCommandBuffer(), imageIndex, vertexBuffer.GetVertexBuffer());
 	VkSubmitInfo submitInfo{};

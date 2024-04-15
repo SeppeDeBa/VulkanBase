@@ -148,7 +148,7 @@ void VulkanBase::createGraphicsPipeline() {
 	//vkDestroyShaderModule(device, fragShaderStageInfo.module, nullptr);
 }
 
-void VulkanBase::createGraphicsPipeline3D() { //also an idea stemming from talking to Siebe! Awesome!
+void VulkanBase::createGraphicsPipeline3D() { 
 	VkPipelineViewportStateCreateInfo viewportState{};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 	viewportState.viewportCount = 1;

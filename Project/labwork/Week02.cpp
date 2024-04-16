@@ -57,7 +57,6 @@ void VulkanBase::drawFrame(uint32_t imageIndex) {
 	//vkCmdBeginRenderPass(commandBuffers[currentFrame].GetVkCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 
-	m_GraphicsPipeline3D.Record(commandBuffers, imageIndex, currentFrame);
 	//record starts here
 
 
@@ -77,7 +76,9 @@ void VulkanBase::drawFrame(uint32_t imageIndex) {
 
 	//just draw both here?
 	vkCmdBindPipeline(commandBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline3D.GetPipeline());
-	draw3DScene(imageIndex);
+	m_GraphicsPipeline3D.Record(commandBuffers, imageIndex, currentFrame);
+	
+	//draw3DScene(imageIndex);
 
 	//record ends here
 

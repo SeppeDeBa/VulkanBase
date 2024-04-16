@@ -49,7 +49,6 @@ static void framebufferResizeCallback(GLFWwindow* window, int width, int height)
 
 }
 
-
 	void run() {
 		initWindow();
 		initVulkan();
@@ -63,7 +62,7 @@ private:
 		createInstance();
 		setupDebugMessenger();
 		createSurface();
-
+		
 		// week 05
 		pickPhysicalDevice();
 		createLogicalDevice();
@@ -74,15 +73,15 @@ private:
 
 		//TODO: REMOVE
 
-		mesh3D1.SetVertices({ {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f} },
-			{ {0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f} },
-			{ {0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f} },
-			{ {-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f} } });
+		mesh3D1.SetVertices({ {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+			{ {0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f} },
+			{ {0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f} },
+			{ {-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f} } });
 
-		mesh3D2.SetVertices({ {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-	{{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-	{{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-	{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}} });
+		mesh3D2.SetVertices({ {{-0.5f, -0.5f, 1.5f}, {1.0f, 1.0f, 1.0f}},
+								{{0.5f, -0.5f, 1.5f}, {1.0f, 1.0f, 1.0f}},
+									{{0.5f, 0.5f, 1.5f}, {1.0f, 01.0f, 1.0f}},
+								{{-0.5f, 0.5f, 1.5f}, {1.0f, 1.0f, 1.0f}} });
 
 		mesh3D1.SetIndices({ 0, 1, 2, 2, 3, 0 });
 		mesh3D2.SetIndices({ 4, 5, 6, 6, 7, 4 });

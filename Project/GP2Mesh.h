@@ -44,7 +44,6 @@ struct Vertex {
 struct Vertex3D {
 	glm::vec3 pos;
 	glm::vec3 color;
-	glm::vec2 texCoord;
 	//glm::vec3 normal;
 
 	static VkVertexInputBindingDescription GetBindingDescription() {
@@ -96,19 +95,10 @@ public:
 
 private:
 	std::vector<Vertex3D> vertices = {
-	{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-	{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-	{{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-	{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
 
-	{{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-	{{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-	{{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-	{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
+
 	};
 	std::vector<uint16_t> indices = {
-	0, 1, 2, 2, 3, 0,
-	4, 5, 6, 6, 7, 4
 	};;
 	//vulkanbuffer vertices
 	//vulkanbuffer indices

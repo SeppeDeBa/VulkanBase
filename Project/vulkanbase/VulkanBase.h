@@ -72,6 +72,8 @@ private:
 		createImageViews();
 
 		//TODO: REMOVE
+		//mesh3D1.BuildMeshFromOBJ("Resources/lowpoly_bunny.obj");
+
 
 		mesh3D1.SetVertices({ {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
 			{ {0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f} },

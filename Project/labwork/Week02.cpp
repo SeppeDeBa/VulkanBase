@@ -59,7 +59,6 @@ void VulkanBase::drawFrame(uint32_t imageIndex) {
 
 	//record starts here
 
-
 	//VkViewport viewport{};
 	//viewport.x = 0.0f;
 	//viewport.y = 0.0f;

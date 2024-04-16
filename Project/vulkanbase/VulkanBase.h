@@ -22,7 +22,7 @@
 #include "GP2Mesh.h"
 #include "GP2DataBuffer.h"
 #include "GP2DescriptorPool.h"
-
+#include "GP2Pipeline.h"
 const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"
 };
@@ -82,6 +82,8 @@ private:
 		createFrameBuffers();
 		// week 02
 		commandPool.Initialize(device, findQueueFamilies(physicalDevice));
+
+
 		//VBuffer
 		vertexBuffer.Initialize(device, physicalDevice, commandPool.GetCommandPool(), graphicsQueue);
 		vertexBuffer.CreateBuffer(mesh);
@@ -306,6 +308,15 @@ private:
 	VkDebugUtilsMessengerEXT debugMessenger;
 	VkDevice device = VK_NULL_HANDLE;
 	VkSurfaceKHR surface;
+
+
+	//INPUT
+	void keyEvent(int key, int scancode, int action, int mods);
+	void mouseEvent(GLFWwindow* window, int button, int action, int mods);
+	void mouseMove(GLFWwindow* window, double xpos, double ypos);
+	float m_Radius{};
+	glm::vec2 m_Rotation{};
+	glm::vec2 m_DragStart{};
 
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;

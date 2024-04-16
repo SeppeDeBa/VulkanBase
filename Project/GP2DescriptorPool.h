@@ -3,7 +3,7 @@
 #include "vulkan/vulkan_core.h"
 
 //Reference: https://vulkan-tutorial.com/en/Uniform_buffers/Descriptor_pool_and_sets
-class GP2DescriptorPool
+class GP2DescriptorPool //TODO: refactor with correct capitalisation!!!
 {
 public:
 	GP2DescriptorPool() //based on commandPool
@@ -88,7 +88,7 @@ public:
 		}
 
 
-	}
+	} 
 
 	void cleanup()
 	{

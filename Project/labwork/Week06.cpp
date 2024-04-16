@@ -64,7 +64,6 @@ void VulkanBase::drawFrame() {
 
 	recordCommandBuffer(imageIndex);
 
-
 	commandBuffers[currentFrame].endRecording();
 
 	uniformBuffer.UpdateUniformBuffer(currentFrame);

@@ -23,6 +23,7 @@ void VulkanBase::drawFrame(uint32_t imageIndex) {
 
 	vkCmdBeginRenderPass(commandBuffers[currentFrame].GetVkCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
+	//record starts here
 	vkCmdBindPipeline(commandBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
 	VkViewport viewport{};
@@ -39,8 +40,15 @@ void VulkanBase::drawFrame(uint32_t imageIndex) {
 	scissor.extent = swapChainExtent;
 	vkCmdSetScissor(commandBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, &scissor);
 
+	//just draw both here?
 	draw3DScene(imageIndex);
+
+	//record ends here
+
 	vkCmdEndRenderPass(commandBuffers[currentFrame].GetVkCommandBuffer());
+
+
+
 
 	//if (vkEndCommandBuffer(commandBuffer.GetVkCommandBuffer()) != VK_SUCCESS) {
 	//	throw std::runtime_error("failed to record command buffer!");

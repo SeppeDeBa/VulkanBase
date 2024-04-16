@@ -3,6 +3,7 @@
 #define MAX_FRAMES_IN_FLIGHT 2
 #endif // !MAX_FRAMES_IN_FLIGHT
 
+
 #include <vulkan/vulkan_core.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -11,9 +12,9 @@
 #include "GP2Mesh.h"
 
 struct UniformBufferObject {
-	glm::mat4 model;
-	glm::mat4 view;
-	glm::mat4 proj;
+	alignas(16) glm::mat4 model;
+	alignas(16) glm::mat4 view;
+	alignas(16) glm::mat4 proj;
 };
 
 class GP2DataBuffer
@@ -144,12 +145,62 @@ public:
 		/*vkDestroyBuffer(m_Device, stagingBuffer.GetBuffer(), nullptr);
 		vkFreeMemory(m_Device, stagingBuffer.GetBufferMemory(), nullptr);*/
 	}
+	virtual void CreateBuffer3D(const GP2Mesh3D& mesh)
+	{
+		VkDeviceSize bufferSize = sizeof(Vertex3D) * mesh.GetVertices().size();
+
+		GP2DataBuffer stagingBuffer{ m_Device
+									, m_PhysicalDevice
+									, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+									, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+									, bufferSize };
+
+		void* data;
+		vkMapMemory(m_Device, stagingBuffer.GetBufferMemory(), 0, bufferSize, 0, &data);
+		memcpy(data, mesh.GetVertices().data(), (size_t)bufferSize);
+		vkUnmapMemory(m_Device, stagingBuffer.GetBufferMemory());
+
+		m_BufferInfo = new GP2DataBuffer(m_Device
+			, m_PhysicalDevice
+			, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
+			, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+			, bufferSize);
+
+		CopyBuffer(stagingBuffer.GetBuffer(), m_BufferInfo->GetBuffer(), bufferSize);
+		/*vkDestroyBuffer(m_Device, stagingBuffer.GetBuffer(), nullptr);
+		vkFreeMemory(m_Device, stagingBuffer.GetBufferMemory(), nullptr);*/
+	}
 };
 
 class GP2IndexBuffer : public GP2BufferBase
 {
 public:
 	virtual void CreateBuffer(const GP2Mesh& mesh) override
+	{
+		VkDeviceSize bufferSize = sizeof(mesh.GetIndices()[0]) * mesh.GetIndices().size();
+
+		GP2DataBuffer stagingBuffer{ m_Device
+									, m_PhysicalDevice
+									, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+									, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+									, bufferSize };
+
+		void* data;
+		vkMapMemory(m_Device, stagingBuffer.GetBufferMemory(), 0, bufferSize, 0, &data);
+		memcpy(data, mesh.GetIndices().data(), (size_t)bufferSize);
+		vkUnmapMemory(m_Device, stagingBuffer.GetBufferMemory());
+
+		m_BufferInfo = new GP2DataBuffer(m_Device
+			, m_PhysicalDevice
+			, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT
+			, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+			, bufferSize);
+
+		CopyBuffer(stagingBuffer.GetBuffer(), m_BufferInfo->GetBuffer(), bufferSize);
+		/*vkDestroyBuffer(m_Device, stagingBuffer.GetBuffer(), nullptr);
+		vkFreeMemory(m_Device, stagingBuffer.GetBufferMemory(), nullptr);*/
+	}
+	virtual void CreateBuffer3D(const GP2Mesh3D& mesh)
 	{
 		VkDeviceSize bufferSize = sizeof(mesh.GetIndices()[0]) * mesh.GetIndices().size();
 
@@ -186,10 +237,10 @@ public:
 			delete uniformBuffer;
 		}
 
-		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-		{
-			m_UniformBufferInfos[i]->Destroy();
-		}
+		//for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+		//{
+		//	m_UniformBufferInfos[i]->Destroy();
+		//}
 		//is this needed?
 		//for (auto uniformBufferMapped : uniformBuffersMapped)
 		//{
@@ -212,6 +263,26 @@ public:
 														, bufferSize };
 
 			
+			vkMapMemory(m_Device, m_UniformBufferInfos[i]->GetBufferMemory(), 0, bufferSize, 0,
+				&m_UniformBuffersMapped[i]);
+			//uniformBuffersMapped[i] = static_cast<VkDeviceMemory*>(pData);
+		}
+	}
+	virtual void CreateBuffer3D(const GP2Mesh3D&)
+	{
+		VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+
+		m_UniformBufferInfos.resize(MAX_FRAMES_IN_FLIGHT);
+		m_UniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+		m_UniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+			m_UniformBufferInfos[i] = new GP2DataBuffer{ m_Device
+														, m_PhysicalDevice
+														, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT
+														, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+														, bufferSize };
+
+
 			vkMapMemory(m_Device, m_UniformBufferInfos[i]->GetBufferMemory(), 0, bufferSize, 0,
 				&m_UniformBuffersMapped[i]);
 			//uniformBuffersMapped[i] = static_cast<VkDeviceMemory*>(pData);

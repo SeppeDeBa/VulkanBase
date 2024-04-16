@@ -40,6 +40,7 @@ void VulkanBase::initWindow() {
 
 void VulkanBase::drawScene() {
 
+	/* after rework
 	VkBuffer vertexBuffers[] = { vertexBuffer.GetBuffer() };
 	VkBuffer indexBuffers = { indexBuffer.GetBuffer() };
 	VkDeviceSize offsets[] = { 0 };
@@ -54,12 +55,16 @@ void VulkanBase::drawScene() {
 	vkCmdDrawIndexed(commandBuffers[currentFrame].GetVkCommandBuffer(), static_cast<uint32_t>(mesh.GetIndices().size()), 1, 0, 0, 0);
 
 	//vkCmdDraw(commandBuffer.getVkCommandBuffer(), 6, 1, 0, 0);
+	*/
 }
 
 
 void VulkanBase::draw3DScene(uint32_t imageIndex)
 
-{	VkBuffer vertexBuffers[] = { vertexBuffer.GetBuffer() };
+{
+	/* after rework
+	 
+	 VkBuffer vertexBuffers[] = { vertexBuffer.GetBuffer() };
 	VkBuffer indexBuffers = { indexBuffer.GetBuffer() };
 	VkDeviceSize offsets[] = { 0 };
 	//bind all buffers
@@ -69,5 +74,6 @@ void VulkanBase::draw3DScene(uint32_t imageIndex)
 	vkCmdDrawIndexed(commandBuffers[currentFrame].GetVkCommandBuffer(), static_cast<uint32_t>(mesh.GetIndices().size()), 1, 0, 0, 0);
 
 	//vkCmdDraw(commandBuffer.getVkCommandBuffer(), 6, 1, 0, 0);
+	*/
 	
 }

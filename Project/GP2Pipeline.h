@@ -14,7 +14,7 @@ public:
 
 	}
 	virtual ~GP2PipelineBase() = default;
-	virtual void CreatePipelineLayout(VkDevice& device, VkRenderPass& renderPass);
+	virtual void CreateGraphicsPipeline(VkDevice& device, VkRenderPass& renderPass) = 0;
 
 	virtual void Initialize(const VkDevice& device) = 0;
 	virtual void Record(std::vector<GP2CommandBuffer>& commBuffers, uint32_t imageIndex, uint32_t currentFrame) = 0;
@@ -36,18 +36,22 @@ public:
 	const std::string& getVertexShaderFile() const { return m_VertexShaderFile; };
 	const std::string& getFragmentShaderFile() const { return m_FragmentShaderFile; };
 
+	const std::vector<GP2VertexBuffer>& GetVertexBuffers() { return m_VertexBuffers; };
+	const std::vector<GP2IndexBuffer>& GetIndexBuffers() { return m_IndexBuffers; };
+	VkPipeline& GetPipeline() { return m_Pipeline;};
+	
 protected:
-	virtual void drawScene(const GP2CommandBuffer& commBuffer) const= 0;
 	std::vector<GP2VertexBuffer> m_VertexBuffers{};
 	std::vector<GP2IndexBuffer> m_IndexBuffers{};
 	//std::vector<GP2UniformBuffer> m_UniformBuffers{};
 	//std::vector<GP2DescriptorPool> m_DescriptorPools{};
 	VkPipelineLayout m_PipelineLayout{};
 	VkPipeline m_Pipeline{};
+	
 private:
 	//int m_amtOfMeshes{};
-	const std::string m_VertexShaderFile{};
-	const std::string m_FragmentShaderFile{};
+	const std::string m_VertexShaderFile;
+	const std::string m_FragmentShaderFile;
 };
 
 
@@ -61,7 +65,7 @@ public:
 		
 	}
 	virtual ~GP2Pipeline2D() override = default;
-	virtual void CreatePipelineLayout(VkDevice& device, VkRenderPass& renderPass) override
+	virtual void CreateGraphicsPipeline(VkDevice& device, VkRenderPass& renderPass) override
 	{
 		VkPipelineViewportStateCreateInfo viewportState{};
 		viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -195,7 +199,6 @@ public:
 		m_IndexBuffers.back().CreateBuffer(meshToAdd);
 	};
 private:
-	virtual void drawScene(const GP2CommandBuffer& commBuffer) const override;
 	std::vector<GP2Mesh> m_Meshes{};
 	GP2Shader m_Shader;
 
@@ -214,7 +217,7 @@ public:
 	}
 	virtual ~GP2Pipeline3D() override = default;
 
-	virtual void CreatePipelineLayout(VkDevice& device, VkRenderPass& renderPass) override
+	virtual void CreateGraphicsPipeline(VkDevice& device, VkRenderPass& renderPass) override
 	{
 		VkPipelineViewportStateCreateInfo viewportState{};
 		viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -296,6 +299,7 @@ public:
 		pipelineInfo.renderPass = renderPass;
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+		
 #pragma endregion
 		if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_Pipeline) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create graphics pipeline!");
@@ -339,6 +343,7 @@ public:
 	virtual void Initialize(const VkDevice& device) override
 	{
 		m_Shader.initialize(device);
+		m_Shader.CreateDescriptorSetLayout(device);
 	}
 
 	void AddMesh3D(const GP2Mesh3D& meshToAdd, const GP2CommandPool& commPool, VkDevice device, VkPhysicalDevice physDevice, VkQueue queue)
@@ -363,9 +368,22 @@ public:
 		////descriptorPool
 		m_DescriptorPools.emplace_back();
 		m_DescriptorPools.back().createDescriptorPool(device);
+		m_DescriptorPools.back().createDescriptorSets(m_Shader.GetDescriptorSetLayout(), m_UniformBuffers.back());
 	};
+
+	const std::vector<GP2UniformBuffer>& GetUniformBuffers() { return m_UniformBuffers; };
+	const std::vector<GP2DescriptorPool>& GetDescriptorPools() { return m_DescriptorPools; };
+
+	void UpdateUniformBuffers(uint32_t currentImage)
+	{
+		for(GP2UniformBuffer& uBuffer : m_UniformBuffers)
+		{
+			uBuffer.UpdateUniformBuffer(currentImage);
+		}
+	}
+
+
 private:
-	virtual void drawScene(const GP2CommandBuffer& commBuffer) const override;
 	std::vector<GP2Mesh3D> m_Meshes{};
 	GP2Shader3D m_Shader;
 	std::vector<GP2UniformBuffer> m_UniformBuffers{};

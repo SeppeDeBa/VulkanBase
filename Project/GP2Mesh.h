@@ -58,9 +58,9 @@ struct Vertex3D {
 		return bindingDescription;
 	}
 
-	static std::array<VkVertexInputAttributeDescription, 3> GetAttributeDescriptions() //https://vulkan-tutorial.com/Depth_buffering
+	static std::array<VkVertexInputAttributeDescription, 2> GetAttributeDescriptions() //https://vulkan-tutorial.com/Depth_buffering
 	{
-		std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{};
+		std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
 
 		attributeDescriptions[0].binding = 0;
 		attributeDescriptions[0].location = 0;

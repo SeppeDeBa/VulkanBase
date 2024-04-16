@@ -72,30 +72,66 @@ private:
 		createSwapChain();
 		createImageViews();
 
+		//TODO: REMOVE
+
+		mesh3D1.SetVertices({ {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f} },
+			{ {0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f} },
+			{ {0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f} },
+			{ {-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f} } });
+
+		mesh3D2.SetVertices({ {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+	{{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+	{{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+	{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}} });
+
+		mesh3D1.SetIndices({ 0, 1, 2, 2, 3, 0 });
+		mesh3D2.SetIndices({ 4, 5, 6, 6, 7, 4 });
+
+
+		
 		// week 03
+
+		//==INIT SHADERS==
 		//m_GradientShader.initialize(device);
-		m_3DShader.initialize(device);
-		m_3DShader.CreateDescriptorSetLayout(device);
+		//m_3DShader.initialize(device);
+		m_GraphicsPipeline2D.Initialize(device);
+		m_GraphicsPipeline3D.Initialize(device);
+		//m_3DShader.CreateDescriptorSetLayout(device);
+
+		//==RENDER PASS==
 		createRenderPass();
+
+
+		//==GRAPHICS PIPELINES==
 		//createGraphicsPipeline();
-		createGraphicsPipeline3D();
+		//createGraphicsPipeline3D();
+		m_GraphicsPipeline2D.CreateGraphicsPipeline(device, renderPass);
+		m_GraphicsPipeline3D.CreateGraphicsPipeline(device, renderPass);
+
+		//==FRAME BUFFERS==
 		createFrameBuffers();
 		// week 02
+
+		//==COMM POOL==
 		commandPool.Initialize(device, findQueueFamilies(physicalDevice));
 
 
-		//VBuffer
-		vertexBuffer.Initialize(device, physicalDevice, commandPool.GetCommandPool(), graphicsQueue);
-		vertexBuffer.CreateBuffer(mesh);
-		//IndexBuffer
-		indexBuffer.Initialize(device, physicalDevice, commandPool.GetCommandPool(), graphicsQueue);
-		indexBuffer.CreateBuffer(mesh);
-		//uniformBuffer
-		uniformBuffer.Initialize(device, physicalDevice, commandPool.GetCommandPool(), graphicsQueue);
-		uniformBuffer.CreateBuffer(mesh);
-		//descriptorPool
-		descriptorPool.createDescriptorPool(device);
-		descriptorPool.createDescriptorSets(m_3DShader.GetDescriptorSetLayout(), uniformBuffer);
+		//==ADD MESHES==
+		m_GraphicsPipeline3D.AddMesh3D(mesh3D1, commandPool, device, physicalDevice, graphicsQueue);
+		m_GraphicsPipeline3D.AddMesh3D(mesh3D2, commandPool, device, physicalDevice, graphicsQueue);
+
+		////VBuffer
+		//vertexBuffer.Initialize(device, physicalDevice, commandPool.GetCommandPool(), graphicsQueue);
+		//vertexBuffer.CreateBuffer(mesh);
+		////IndexBuffer
+		//indexBuffer.Initialize(device, physicalDevice, commandPool.GetCommandPool(), graphicsQueue);
+		//indexBuffer.CreateBuffer(mesh);
+		////uniformBuffer
+		//uniformBuffer.Initialize(device, physicalDevice, commandPool.GetCommandPool(), graphicsQueue);
+		//uniformBuffer.CreateBuffer(mesh);
+		////descriptorPool
+		//descriptorPool.createDescriptorPool(device);
+		//descriptorPool.createDescriptorSets(m_3DShader.GetDescriptorSetLayout(), uniformBuffer);
 
 		//comm buffer
 		commandBuffers = commandPool.createCommandBuffers();
@@ -122,19 +158,22 @@ private:
 			vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
 			vkDestroyFence(device, inFlightFences[i], nullptr);
 		}
+
+		m_GraphicsPipeline2D.Cleanup(device);
+		m_GraphicsPipeline3D.Cleanup(device);
 		//cleanup buffers
-		vertexBuffer.Cleanup();
-		indexBuffer.Cleanup();
-		uniformBuffer.Cleanup();
+		//vertexBuffer.Cleanup();
+		//indexBuffer.Cleanup();
+		//uniformBuffer.Cleanup();
 
 		//cleanup pools
 		commandPool.Destroy();
-		descriptorPool.cleanup(); //todo:fix naming convention
+		//descriptorPool.cleanup(); //todo:fix naming convention
 
 		//cleaning ye ole pipes
-		vkDestroyPipeline(device, graphicsPipeline, nullptr);
-		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-		m_3DShader.Cleanup(device);
+		//vkDestroyPipeline(device, graphicsPipeline, nullptr);
+		//vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+		//m_3DShader.Cleanup(device);
 		vkDestroyRenderPass(device, renderPass, nullptr);
 
 
@@ -203,12 +242,12 @@ private:
 		}
 	}
 
-	GP2Shader m_GradientShader{
-		"shaders/shader.vert.spv",
-		"shaders/shader.frag.spv"};
+	//GP2Shader m_GradientShader{
+	//	"shaders/shader.vert.spv",
+	//	"shaders/shader.frag.spv"};
 
-	GP2Shader3D m_3DShader{ "shaders/shader3D.vert.spv",
-							"shaders/shader.frag.spv" };
+	//GP2Shader3D m_3DShader{ "shaders/shader3D.vert.spv",
+	//						"shaders/shader.frag.spv" };
 
 	// Week 01: 
 	// Actual window
@@ -230,12 +269,29 @@ private:
 
 	GP2CommandPool commandPool;
 	std::vector<GP2CommandBuffer> commandBuffers;
-	GP2Mesh mesh{};
-	GP2VertexBuffer vertexBuffer;
+	GP2Mesh mesh2D1{}, mesh2D2{}, mesh2D3{};
+	GP2Mesh3D mesh3D1{}, mesh3D2{}, mesh3D3{};
+	//GP2VertexBuffer vertexBuffer;
+	//GP2IndexBuffer indexBuffer;
+	//GP2UniformBuffer uniformBuffer;
+	//GP2DescriptorPool descriptorPool;
 
-	GP2IndexBuffer indexBuffer;
-	GP2UniformBuffer uniformBuffer;
-	GP2DescriptorPool descriptorPool;
+	std::vector<VkFramebuffer> swapChainFramebuffers;
+	//VkPipelineLayout pipelineLayout;
+	//VkPipeline graphicsPipeline;
+	GP2Pipeline2D m_GraphicsPipeline2D{ "shaders/shader.vert.spv",
+										"shaders/shader.frag.spv" };
+	GP2Pipeline3D m_GraphicsPipeline3D{ "shaders/shader3D.vert.spv",
+										"shaders/shader.frag.spv" };
+
+
+	VkRenderPass renderPass;
+
+	void createFrameBuffers();
+	void createRenderPass();
+	void createGraphicsPipeline();
+	void createGraphicsPipeline3D();
+	void createUniformBuffers();
 
 	uint32_t currentFrame = 0;
 	//uint32_t imageIndex = 0;
@@ -258,17 +314,6 @@ private:
 	// Renderpass concept
 	// Graphics pipeline
 	
-	std::vector<VkFramebuffer> swapChainFramebuffers;
-	VkPipelineLayout pipelineLayout;
-	VkPipeline graphicsPipeline;
-	VkRenderPass renderPass;
-
-	void createFrameBuffers();
-	void createRenderPass();
-	void createGraphicsPipeline();
-	void createGraphicsPipeline3D();
-	void createUniformBuffers();
-
 
 	// Week 04
 	// Swap chain and image view support

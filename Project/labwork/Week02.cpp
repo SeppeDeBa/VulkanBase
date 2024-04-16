@@ -21,10 +21,14 @@ void VulkanBase::drawFrame(uint32_t imageIndex) {
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
 
+
+
+
+	//2D   ==============================================================================
 	vkCmdBeginRenderPass(commandBuffers[currentFrame].GetVkCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 	//record starts here
-	vkCmdBindPipeline(commandBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+
 
 	VkViewport viewport{};
 	viewport.x = 0.0f;
@@ -33,14 +37,46 @@ void VulkanBase::drawFrame(uint32_t imageIndex) {
 	viewport.height = (float)swapChainExtent.height;
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
-	vkCmdSetViewport(commandBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, &viewport);
+	vkCmdSetViewport(commandBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, &viewport);//todo: ask if needed?
 
 	VkRect2D scissor{};
 	scissor.offset = { 0, 0 };
 	scissor.extent = swapChainExtent;
-	vkCmdSetScissor(commandBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, &scissor);
+	vkCmdSetScissor(commandBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, &scissor);//todo: ask if needed?
 
 	//just draw both here?
+	vkCmdBindPipeline(commandBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline2D.GetPipeline());
+	m_GraphicsPipeline2D.Record(commandBuffers, imageIndex, currentFrame);
+
+	//record ends here
+
+
+
+	//3D  ==============================================================================
+	//needed?
+	//vkCmdBeginRenderPass(commandBuffers[currentFrame].GetVkCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+
+	m_GraphicsPipeline3D.Record(commandBuffers, imageIndex, currentFrame);
+	//record starts here
+
+
+	//VkViewport viewport{};
+	//viewport.x = 0.0f;
+	//viewport.y = 0.0f;
+	//viewport.width = (float)swapChainExtent.width;
+	//viewport.height = (float)swapChainExtent.height;
+	//viewport.minDepth = 0.0f;
+	//viewport.maxDepth = 1.0f;
+	//vkCmdSetViewport(commandBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, &viewport);
+
+	//VkRect2D scissor{};
+	//scissor.offset = { 0, 0 };
+	//scissor.extent = swapChainExtent;
+	//vkCmdSetScissor(commandBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, &scissor);
+
+	//just draw both here?
+	vkCmdBindPipeline(commandBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline3D.GetPipeline());
 	draw3DScene(imageIndex);
 
 	//record ends here

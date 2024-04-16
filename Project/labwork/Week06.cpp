@@ -66,7 +66,8 @@ void VulkanBase::drawFrame() {
 
 	commandBuffers[currentFrame].endRecording();
 
-	uniformBuffer.UpdateUniformBuffer(currentFrame);
+	//uniformBuffer.UpdateUniformBuffer(currentFrame);
+	m_GraphicsPipeline3D.UpdateUniformBuffers(currentFrame);
 	
 	//vkResetCommandBuffer(commandBuffer.getVkCommandBuffer(), /*VkCommandBufferResetFlagBits*/ 0);
 	//recordCommandBuffer(commandBuffer.getVkCommandBuffer(), imageIndex, vertexBuffer.GetVertexBuffer());

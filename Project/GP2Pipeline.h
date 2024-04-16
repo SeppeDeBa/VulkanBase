@@ -36,7 +36,6 @@ public:
 	const std::string& getVertexShaderFile() const { return m_VertexShaderFile; };
 	const std::string& getFragmentShaderFile() const { return m_FragmentShaderFile; };
 
-	void AddMesh();
 protected:
 	virtual void drawScene(const GP2CommandBuffer& commBuffer) const= 0;
 	std::vector<GP2VertexBuffer> m_VertexBuffers{};
@@ -152,18 +151,33 @@ public:
 
 		m_Shader.destroyShaderModules(device);
 	}
-	virtual void Initialize(const VkDevice& device) override
-	{
-		m_Shader.initialize(device);
-	}
 	virtual void Record(std::vector<GP2CommandBuffer>& commBuffers, uint32_t imageIndex, uint32_t currentFrame) override
 	{
-		
+		for (int i{}; i < m_Meshes.size(); ++i)
+		{
+			VkBuffer vertexBuffers[] = { m_VertexBuffers[i].GetBuffer()};
+			VkBuffer indexBuffers = { m_IndexBuffers[i].GetBuffer()};
+			VkDeviceSize offsets[] = { 0 };
+			vkCmdBindVertexBuffers(commBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, vertexBuffers, offsets);
+
+
+			vkCmdBindIndexBuffer(commBuffers[currentFrame].GetVkCommandBuffer(), indexBuffers, 0, VK_INDEX_TYPE_UINT16);
+
+			//VkBuffer vertexBuffers[] = { vertexBuffer };
+			//VkDeviceSize offsets[] = { 0 };
+
+			vkCmdDrawIndexed(commBuffers[currentFrame].GetVkCommandBuffer(), static_cast<uint32_t>(m_Meshes[i].GetIndices().size()), 1, 0, 0, 0);
+		}
+		//vkCmdDraw(commandBuffer.getVkCommandBuffer(), 6, 1, 0, 0);
 	}
 	virtual void Cleanup(VkDevice& device) override
 	{
 		GP2PipelineBase::Cleanup(device);
 		
+	}
+	virtual void Initialize(const VkDevice& device) override
+	{
+		m_Shader.initialize(device);
 	}
 
 	void AddMesh2D(const GP2Mesh& meshToAdd, const GP2CommandPool& commPool ,VkDevice device, VkPhysicalDevice physDevice, VkQueue queue)
@@ -263,8 +277,8 @@ public:
 		pipelineInfo.pStages = m_Shader.getShaderStages().data();
 		VkPipelineVertexInputStateCreateInfo is = m_Shader.createVertexInputStateInfo();
 
-		auto bindingDescription = Vertex::GetBindingDescription();
-		auto attributeDescriptions = Vertex::GetAttributeDescriptions();
+		auto bindingDescription = Vertex3D::GetBindingDescription();
+		auto attributeDescriptions = Vertex3D::GetAttributeDescriptions();
 		is.vertexBindingDescriptionCount = 1;
 		is.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
 		is.pVertexBindingDescriptions = &bindingDescription;
@@ -290,6 +304,21 @@ public:
 	}
 
 
+	virtual void Record(std::vector<GP2CommandBuffer>& commBuffers, uint32_t imageIndex, uint32_t currentFrame) override
+	{
+		for (int i{}; i < m_Meshes.size(); ++i)
+		{
+			VkBuffer vertexBuffers[] = { m_VertexBuffers[i].GetBuffer()};
+			VkBuffer indexBuffers = { m_IndexBuffers[i].GetBuffer()};
+			VkDeviceSize offsets[] = { 0 };
+			//bind all buffers
+			vkCmdBindVertexBuffers(commBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, vertexBuffers, offsets);
+			vkCmdBindIndexBuffer(commBuffers[currentFrame].GetVkCommandBuffer(), indexBuffers, 0, VK_INDEX_TYPE_UINT16);
+			vkCmdBindDescriptorSets(commBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout, 0, 1, &m_DescriptorPools[i].GetDescriptorSets()[currentFrame], 0, nullptr);
+			vkCmdDrawIndexed(commBuffers[currentFrame].GetVkCommandBuffer(), static_cast<uint32_t>(m_Meshes[i].GetIndices().size()), 1, 0, 0, 0);
+		}
+		//vkCmdDraw(commandBuffer.getVkCommandBuffer(), 6, 1, 0, 0);
+	}
 	virtual void Cleanup(VkDevice& device) override
 	{
 		//std::vector<GP2UniformBuffer> m_UniformBuffers{};
@@ -309,22 +338,7 @@ public:
 	}
 	virtual void Initialize(const VkDevice& device) override
 	{
-		
-	}
-	virtual void Record(std::vector<GP2CommandBuffer>& commBuffers, uint32_t imageIndex, uint32_t currentFrame) override
-	{
-		for (int i{}; i < m_Meshes.size(); ++i)
-		{
-			VkBuffer vertexBuffers[] = { m_VertexBuffers[i].GetBuffer()};
-			VkBuffer indexBuffers = { m_IndexBuffers[i].GetBuffer()};
-			VkDeviceSize offsets[] = { 0 };
-			//bind all buffers
-			vkCmdBindVertexBuffers(commBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, vertexBuffers, offsets);
-			vkCmdBindIndexBuffer(commBuffers[currentFrame].GetVkCommandBuffer(), indexBuffers, 0, VK_INDEX_TYPE_UINT16);
-			vkCmdBindDescriptorSets(commBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout, 0, 1, &m_DescriptorPools[i].GetDescriptorSets()[currentFrame], 0, nullptr);
-			vkCmdDrawIndexed(commBuffers[currentFrame].GetVkCommandBuffer(), static_cast<uint32_t>(m_Meshes[i].GetIndices().size()), 1, 0, 0, 0);
-		}
-		//vkCmdDraw(commandBuffer.getVkCommandBuffer(), 6, 1, 0, 0);
+		m_Shader.initialize(device);
 	}
 
 	void AddMesh3D(const GP2Mesh3D& meshToAdd, const GP2CommandPool& commPool, VkDevice device, VkPhysicalDevice physDevice, VkQueue queue)

@@ -80,7 +80,7 @@ class GP2Mesh3D
 {
 public:
 
-	void SetIndices(const std::vector<uint16_t> input)
+	void SetIndices(const std::vector<uint16_t>& input)
 	{
 		indices = input;
 	}
@@ -120,7 +120,7 @@ class GP2Mesh
 {
 public:
 
-	void SetIndices(const std::vector<uint16_t> input)
+	void SetIndices(const std::vector<uint16_t>& input)
 	{
 		indices = input;
 	}

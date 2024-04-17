@@ -76,19 +76,38 @@ private:
 
 
 		mesh3D1.SetVertices({ {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-			{ {0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f} },
-			{ {0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f} },
-			{ {-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f} } });
+			{ {0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f} },
+			{ {0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f} },
+			{ {-0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f} } });
 
-		mesh3D2.SetVertices({ {{-0.5f, -0.5f, 1.5f}, {1.0f, 1.0f, 1.0f}},
-								{{0.5f, -0.5f, 1.5f}, {1.0f, 1.0f, 1.0f}},
-									{{0.5f, 0.5f, 1.5f}, {1.0f, 01.0f, 1.0f}},
-								{{-0.5f, 0.5f, 1.5f}, {1.0f, 1.0f, 1.0f}} });
+		mesh3D2.SetVertices({ {{-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+								{{0.5f, -0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+									{{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+								{{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}} });
+		mesh3D3.SetVertices({ {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
+						{{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
+							{{0.5f, 0.5f, -0.5f}, {1.0f, 00.0f, 0.0f}},
+						{{-0.5f, 0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}} });
+
+
+		mesh2D1.SetVertices({ {{0.1f, 0.1f}, {1.0f, 0.0f, 0.0f}},
+			{ {0.5f, 0.1f}, {0.0f, 1.0f, 0.0f} },
+			{ {0.5f, 0.5f}, {0.0f, 0.0f, 1.0f} },
+			{ {0.1f, 0.5f}, {1.0f, 1.0f, 1.0f} } });
+
+		mesh2D2.SetVertices({ {{-0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}},
+			{ {-0.1f, -0.5f}, {1.0f, 1.0f, 1.0f} },
+			{ {-0.1f, -0.1}, {1.0f, 1.0f, 1.0f} },
+			{ {-0.5f, -0.1f}, {1.0f, 1.0f, 1.0f} } });
+
 
 		mesh3D1.SetIndices({ 0, 1, 2, 2, 3, 0 });
-		mesh3D2.SetIndices({ 4, 5, 6, 6, 7, 4 });
+		mesh3D2.SetIndices({ 0, 1, 2, 2, 3, 0 });
+		mesh3D3.SetIndices({ 0, 1, 2, 2, 3, 0 });
+		mesh2D1.SetIndices({ 0, 1, 2, 2, 3, 0 });
+		mesh2D2.SetIndices({ 0, 1, 2, 2, 3, 0 });
 
-
+		
 		
 		// week 03
 
@@ -120,6 +139,15 @@ private:
 		//==ADD MESHES==
 		m_GraphicsPipeline3D.AddMesh3D(mesh3D1, commandPool, device, physicalDevice, graphicsQueue);
 		m_GraphicsPipeline3D.AddMesh3D(mesh3D2, commandPool, device, physicalDevice, graphicsQueue);
+
+		//disabling mesh 3, too cluttered, leaving it at 2 for hand-in
+		//m_GraphicsPipeline3D.AddMesh3D(mesh3D3, commandPool, device, physicalDevice, graphicsQueue);
+
+
+		m_GraphicsPipeline2D.AddMesh2D(mesh2D1, commandPool, device, physicalDevice, graphicsQueue);
+		m_GraphicsPipeline2D.AddMesh2D(mesh2D2, commandPool, device, physicalDevice, graphicsQueue);
+
+
 
 		////VBuffer
 		//vertexBuffer.Initialize(device, physicalDevice, commandPool.GetCommandPool(), graphicsQueue);

@@ -1,4 +1,5 @@
 #include "vulkanbase/VulkanBase.h"
+
 void VulkanBase::initWindow() {
 	glfwInit();
 

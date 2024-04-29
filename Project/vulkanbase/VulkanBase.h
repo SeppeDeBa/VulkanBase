@@ -17,8 +17,8 @@
 #include <set>
 #include <limits>
 #include <algorithm>
-#define STB_IMAGE_IMPLEMENTATION
-#include <imports/stb_image/stb_image.h>
+//#define STB_IMAGE_IMPLEMENTATION
+//#include <imports/stb_image/stb_image.h>
 #include "GP2Shader.h"
 #include "GP2CommandPool.h"
 #include "GP2Mesh.h"
@@ -136,7 +136,7 @@ private:
 
 		//==COMM POOL==
 		commandPool.Initialize(device, findQueueFamilies(physicalDevice));
-
+		//createTextureImage();
 
 		//==ADD MESHES==
 		m_GraphicsPipeline3D.AddMesh3D(mesh3D1, commandPool, device, physicalDevice, graphicsQueue);
@@ -337,6 +337,8 @@ private:
 	//void createCommandBuffer();
 	//void createCommandPool(); 
 	void recordCommandBuffer(uint32_t imageIndex);
+	void createTextureImage();
+	void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 
 	//void CreateVertexBuffer();
 

@@ -10,12 +10,13 @@
 #include <vector>
 #include <chrono>
 #include "GP2Mesh.h"
-
+#include "imports/stb_image/stb_image.h"
 struct UniformBufferObject {
 	alignas(16) glm::mat4 model;
 	alignas(16) glm::mat4 view;
 	alignas(16) glm::mat4 proj;
 };
+
 
 class GP2DataBuffer
 {
@@ -51,6 +52,9 @@ private:
 	}
 };
 
+
+
+
 class GP2BufferBase
 {
 public:
@@ -70,7 +74,8 @@ public:
 		m_GraphicsQueue = graphicsQueue;
 	}
 
-	virtual void CreateBuffer(const GP2Mesh& mesh) = 0;
+	virtual void CreateBuffer(const GP2Mesh& mesh);
+	virtual void CreateBuffer(const VkDeviceSize size);
 
 protected:
 	VkDevice m_Device;
@@ -114,6 +119,15 @@ protected:
 		vkQueueWaitIdle(m_GraphicsQueue);
 
 		vkFreeCommandBuffers(m_Device, m_CommandPool, 1, &commandBuffer);
+	}
+};
+
+class GP2TextureBuffer : public GP2BufferBase
+{
+public:
+	virtual void CreateBuffer(const VkDeviceSize size) override
+	{
+
 	}
 };
 
@@ -172,9 +186,14 @@ public:
 	}
 };
 
+
+
+
 class GP2IndexBuffer : public GP2BufferBase
 {
 public:
+
+
 	virtual void CreateBuffer(const GP2Mesh& mesh) override
 	{
 		VkDeviceSize bufferSize = sizeof(mesh.GetIndices()[0]) * mesh.GetIndices().size();

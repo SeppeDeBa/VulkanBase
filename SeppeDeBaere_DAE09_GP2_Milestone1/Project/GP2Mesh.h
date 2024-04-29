@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include "vulkanbase/VulkanUtil.h"
 #include <memory>
-#include <tiny_obj_loader.h>
+
 
 
 //if changing, change where it's set for CMAKE!!!
@@ -117,7 +117,6 @@ public:
 			{
 				// Ignore Comment
 			}
-			
 			else if (sCommand == "v")
 			{
 				//Vertex

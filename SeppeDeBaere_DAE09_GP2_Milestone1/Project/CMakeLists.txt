@@ -38,17 +38,9 @@ set(SOURCES
     "labwork/Week06.cpp"
     "GP2Shader.cpp" "GP2CommandPool.cpp" "GP2CommandBuffer.cpp" "GP2Mesh.h" "GP2DataBuffer.cpp" "3DCamera.h" "GP2DescriptorPool.cpp" "GP2Utils.h" "GP2Pipeline.h")
 
-    
-   
-
 # Create the executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${GLSL_SOURCE_FILES}  "vulkanbase/VulkanUtil.cpp" "labwork/Week03.cpp" )
 add_dependencies(${PROJECT_NAME} Shaders)
 # Link libraries
-#target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${Vulkan_LIBRARIES} glfw )
-target_link_libraries(${PROJECT_NAME} PRIVATE ${Vulkan_LIBRARIES} tinyobjloader )
-
-#target_include_directories(${SOURCE_DIR}/stb-master)
-#include_directories(${SOURCE_DIR}/stb-master)	
+target_link_libraries(${PROJECT_NAME} PRIVATE ${Vulkan_LIBRARIES} glfw)

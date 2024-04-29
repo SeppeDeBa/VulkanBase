@@ -17,8 +17,6 @@
 #include <set>
 #include <limits>
 #include <algorithm>
-#define STB_IMAGE_IMPLEMENTATION
-#include <imports/stb_image/stb_image.h>
 #include "GP2Shader.h"
 #include "GP2CommandPool.h"
 #include "GP2Mesh.h"

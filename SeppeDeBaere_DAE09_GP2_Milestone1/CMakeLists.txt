@@ -18,16 +18,8 @@ FetchContent_Declare(
   GIT_TAG        3.3.8 # Specify the version you need
 
 )
+
 FetchContent_MakeAvailable(glfw)
-
-FetchContent_Declare(tinyobjloader
-  GIT_REPOSITORY https://github.com/tinyobjloader/tinyobjloader.git
-  GIT_TAG v2.0.0rc13
-  GIT_SHALLOW TRUE
-  GIT_PROGRESS TRUE
-)
-FetchContent_MakeAvailable(tinyobjloader)
-
 
 
 # Find the required packages
@@ -35,7 +27,6 @@ find_package(Vulkan REQUIRED)
 
 # Include Directories
 include_directories(${Vulkan_INCLUDE_DIRS})
-#include_directories(${Vulkan_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/stb-master)
 
 add_subdirectory(Project)
 

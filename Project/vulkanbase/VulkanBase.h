@@ -60,11 +60,13 @@ static void framebufferResizeCallback(GLFWwindow* window, int width, int height)
 
 private:
 	void initVulkan() {
-		// week 06
+		// week 06	
 		createInstance();
 		setupDebugMessenger();
 		createSurface();
 		
+		createTextureImage();
+		createTextureImageView();
 		// week 05
 		pickPhysicalDevice();
 		createLogicalDevice();
@@ -72,7 +74,7 @@ private:
 		// week 04 
 		createSwapChain();
 		createImageViews();
-
+		
 		//TODO: REMOVE
 		//mesh3D1.BuildMeshFromOBJ("Resources/lowpoly_bunny.obj");
 
@@ -190,8 +192,16 @@ private:
 			vkDestroyFence(device, inFlightFences[i], nullptr);
 		}
 
+
 		m_GraphicsPipeline2D.Cleanup(device);
 		m_GraphicsPipeline3D.Cleanup(device);
+		
+		vkDestroySampler(device, textureSampler, nullptr);
+		vkDestroyImageView(device, textureImageView, nullptr);
+
+		vkDestroyImage(device, textureImage, nullptr);
+		vkFreeMemory(device, textureImageMemory, nullptr);
+		
 		//cleanup buffers
 		//vertexBuffer.Cleanup();
 		//indexBuffer.Cleanup();
@@ -337,9 +347,23 @@ private:
 	//void createCommandBuffer();
 	//void createCommandPool(); 
 	void recordCommandBuffer(uint32_t imageIndex);
+	VkImage textureImage;
+	VkDeviceMemory textureImageMemory;
+	VkImageView textureImageView;
+	VkSampler textureSampler;
+
+
+
+
 	void createTextureImage();
 	void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
-
+	void createTextureImageView();
+	void createTextureSampler();
+	//helper functions:
+	VkCommandBuffer beginSingleTimeCommands();
+	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 	//void CreateVertexBuffer();
 
 	// Week 03
@@ -367,6 +391,7 @@ private:
 	void cleanupSwapChain();
 
 	void createImageViews();
+	VkImageView createImageView(VkImage image, VkFormat format);
 
 	// Week 05 
 	// Logical and physical device

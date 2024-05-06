@@ -29,14 +29,7 @@ public:
 	const VkBuffer& GetBuffer() const { return m_VkBuffer; }
 	const VkDeviceMemory& GetBufferMemory() const { return m_VkBufferMemory; }
 	const VkDeviceSize& GetSize() const { return m_Size; }
-
-private:
-	VkDevice m_VkDevice;
-	VkDeviceSize m_Size;
-	VkBuffer m_VkBuffer;
-	VkDeviceMemory m_VkBufferMemory;
-
-	uint32_t FindMemoryType(VkPhysicalDevice physDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
+	static uint32_t FindMemoryType(VkPhysicalDevice physDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
 	{
 		VkPhysicalDeviceMemoryProperties memProperties;
 		vkGetPhysicalDeviceMemoryProperties(physDevice, &memProperties);
@@ -50,6 +43,13 @@ private:
 		}
 		return 0;
 	}
+
+private:
+	VkDevice m_VkDevice;
+	VkDeviceSize m_Size;
+	VkBuffer m_VkBuffer;
+	VkDeviceMemory m_VkBufferMemory;
+
 };
 
 
@@ -74,8 +74,9 @@ public:
 		m_GraphicsQueue = graphicsQueue;
 	}
 
-	virtual void CreateBuffer(const GP2Mesh& mesh);
-	virtual void CreateBuffer(const VkDeviceSize size);
+	virtual void CreateBuffer(const GP2Mesh& mesh) = 0;
+	virtual void CreateBuffer3D(const GP2Mesh3D&) = 0;
+	//virtual void CreateBuffer(const VkDeviceSize size);
 
 protected:
 	VkDevice m_Device;
@@ -122,14 +123,6 @@ protected:
 	}
 };
 
-class GP2TextureBuffer : public GP2BufferBase
-{
-public:
-	virtual void CreateBuffer(const VkDeviceSize size) override
-	{
-
-	}
-};
 
 class GP2VertexBuffer : public GP2BufferBase
 {

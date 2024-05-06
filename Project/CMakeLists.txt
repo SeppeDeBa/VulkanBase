@@ -50,5 +50,25 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${Vulkan_LIBRARIES} glfw )
 target_link_libraries(${PROJECT_NAME} PRIVATE ${Vulkan_LIBRARIES} tinyobjloader )
 
+
+
+set(RESOURCES_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Resources")
+file(GLOB_RECURSE RESOURCE_FILES
+    "${RESOURCES_SOURCE_DIR}/*.jpg"
+    "${RESOURCES_SOURCE_DIR}/*.png"
+    "${RESOURCES_SOURCE_DIR}/*.obj"
+)
+
+set(RESOURCES_OUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/Resources/")
+file(MAKE_DIRECTORY ${RESOURCES_OUT_DIR})
+foreach(RESOURCE ${RESOURCE_FILES})
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy ${RESOURCE}
+    ${RESOURCES_OUT_DIR})
+endforeach(RESOURCE)
+
+
 #target_include_directories(${SOURCE_DIR}/stb-master)
 #include_directories(${SOURCE_DIR}/stb-master)	
+
+

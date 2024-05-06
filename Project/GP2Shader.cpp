@@ -1,5 +1,6 @@
 #include "GP2Shader.h"
 #include "vulkanbase/VulkanUtil.h"
+#include <array>
 void GP2Shader::initialize(const VkDevice& vkDevice)
 {
 	m_ShaderStages.push_back(createVertexShaderInfo(vkDevice));
@@ -89,12 +90,27 @@ void GP2Shader3D::CreateDescriptorSetLayout(const VkDevice& vkDevice)
 	uboLayoutBinding.binding = 0;
 	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	uboLayoutBinding.descriptorCount = 1;
-
+	uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
 	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
-	uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
+	VkDescriptorSetLayoutBinding samplerLayoutBinding{};
+	samplerLayoutBinding.binding = 1;
+	samplerLayoutBinding.descriptorCount = 1;
+	samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	samplerLayoutBinding.pImmutableSamplers = nullptr;
+	samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-	VkPipelineLayout pipelineLayout;
+	std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, samplerLayoutBinding };
+	VkDescriptorSetLayoutCreateInfo layoutInfo{};
+	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+	layoutInfo.pBindings = bindings.data();
+
+	if (vkCreateDescriptorSetLayout(vkDevice, &layoutInfo, nullptr, &m_DescriptorSetLayout) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create descriptor set layout!");
+	}
+
+	/*VkPipelineLayout pipelineLayout;
 
 	VkDescriptorSetLayoutCreateInfo layoutInfo{};
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -108,7 +124,7 @@ void GP2Shader3D::CreateDescriptorSetLayout(const VkDevice& vkDevice)
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutInfo.setLayoutCount = 1;
-	pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
+	pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;*/
 }
 
 void GP2Shader3D::Cleanup(const VkDevice& vkDevice)

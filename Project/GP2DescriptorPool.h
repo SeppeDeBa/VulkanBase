@@ -15,30 +15,48 @@ public:
 	void createDescriptorPool(const VkDevice& device)
 	{
 		m_Device = device;
-		//size
-		VkDescriptorPoolSize poolSize{};
-		poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		poolSize.descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+		std::array<VkDescriptorPoolSize, 2> poolSizes{};
+		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+		poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		poolSizes[1].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
-		//info
 		VkDescriptorPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-		poolInfo.poolSizeCount = 1;
-		poolInfo.pPoolSizes = &poolSize;
-
-		//max number of descriptor sets
+		poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+		poolInfo.pPoolSizes = poolSizes.data();
 		poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
-		//check what can be freed, default flag value can be 0
-		//VkDescriptorPool  descriptorPool;
-
-		if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &m_DescriptorPool) != VK_SUCCESS) { //todo problem here
+		if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &m_DescriptorPool) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create descriptor pool!");
 		}
 		m_Created = true;
+
+		//m_Device = device;
+		////size
+		//VkDescriptorPoolSize poolSize{};
+		//poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		//poolSize.descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+
+		////info
+		//VkDescriptorPoolCreateInfo poolInfo{};
+		//poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+		//poolInfo.poolSizeCount = 1;
+		//poolInfo.pPoolSizes = &poolSize;
+
+		////max number of descriptor sets
+		//poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+
+		////check what can be freed, default flag value can be 0
+		////VkDescriptorPool  descriptorPool;
+
+		//if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &m_DescriptorPool) != VK_SUCCESS) { //todo problem here
+		//	throw std::runtime_error("failed to create descriptor pool!");
+		//}
+		//m_Created = true;
 	}
 
-	void createDescriptorSets(const VkDescriptorSetLayout& descriptorSetLayout, const GP2UniformBuffer& uniformBuffers)
+	void createDescriptorSets(const VkDescriptorSetLayout& descriptorSetLayout, const GP2UniformBuffer& uniformBuffers, const VkImageView& texImgView, const VkSampler texSampler)
 	{
 		//check order of operations
 		if(!m_Created)
@@ -67,24 +85,48 @@ public:
 			bufferInfo.offset = 0;
 			bufferInfo.range = sizeof(UniformBufferObject);
 
+			VkDescriptorImageInfo imageInfo{};
+			imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			imageInfo.imageView = texImgView;
+			imageInfo.sampler = texSampler;
 
-			//overwriting whole buffer
-			VkWriteDescriptorSet descriptorWrite{};
-			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			descriptorWrite.dstSet = m_DescriptorSets[i];
-			descriptorWrite.dstBinding = 0;
-			descriptorWrite.dstArrayElement = 0;
+			std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 
-			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			descriptorWrite.descriptorCount = 1;
+			descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[0].dstSet = m_DescriptorSets[i];
+			descriptorWrites[0].dstBinding = 0;
+			descriptorWrites[0].dstArrayElement = 0;
+			descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorWrites[0].descriptorCount = 1;
+			descriptorWrites[0].pBufferInfo = &bufferInfo;
 
-			//specify how many array elements
-			descriptorWrite.pBufferInfo = &bufferInfo;
-			descriptorWrite.pImageInfo = nullptr; // Optional
-			descriptorWrite.pTexelBufferView = nullptr; // Optional
+			descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[1].dstSet = m_DescriptorSets[i];
+			descriptorWrites[1].dstBinding = 1;
+			descriptorWrites[1].dstArrayElement = 0;
+			descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrites[1].descriptorCount = 1;
+			descriptorWrites[1].pImageInfo = &imageInfo;
+
+			vkUpdateDescriptorSets(m_Device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+
+			////overwriting whole buffer
+			//VkWriteDescriptorSet descriptorWrite{};
+			//descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			//descriptorWrite.dstSet = m_DescriptorSets[i];
+			//descriptorWrite.dstBinding = 0;
+			//descriptorWrite.dstArrayElement = 0;
+
+			//descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			//descriptorWrite.descriptorCount = 1;
+
+			////specify how many array elements
+			//descriptorWrite.pBufferInfo = &bufferInfo;
+			//descriptorWrite.pImageInfo = nullptr; // Optional
+			//descriptorWrite.pTexelBufferView = nullptr; // Optional
 
 			//needs ref
-			vkUpdateDescriptorSets(m_Device, 1, &descriptorWrite, 0, nullptr);
+			//vkUpdateDescriptorSets(m_Device, 1, &descriptorWrite, 0, nullptr);
 		}
 
 

@@ -145,8 +145,8 @@ private:
 		createTextureSampler();
 
 		//==ADD MESHES==
-		m_GraphicsPipeline3D.AddMesh3D(mesh3D1, commandPool, device, physicalDevice, graphicsQueue);
-		m_GraphicsPipeline3D.AddMesh3D(mesh3D2, commandPool, device, physicalDevice, graphicsQueue);
+		m_GraphicsPipeline3D.AddMesh3D(mesh3D1, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
+		m_GraphicsPipeline3D.AddMesh3D(mesh3D2, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
 
 		//disabling mesh 3, too cluttered, leaving it at 2 for hand-in
 		//m_GraphicsPipeline3D.AddMesh3D(mesh3D3, commandPool, device, physicalDevice, graphicsQueue);
@@ -327,7 +327,7 @@ private:
 	GP2Pipeline2D m_GraphicsPipeline2D{ "shaders/shader.vert.spv",
 										"shaders/shader.frag.spv" };
 	GP2Pipeline3D m_GraphicsPipeline3D{ "shaders/shader3D.vert.spv",
-										"shaders/shader.frag.spv" };
+										"shaders/shader3D.frag.spv" };
 
 
 	VkRenderPass renderPass;

@@ -346,7 +346,7 @@ public:
 		m_Shader.CreateDescriptorSetLayout(device);
 	}
 
-	void AddMesh3D(const GP2Mesh3D& meshToAdd, const GP2CommandPool& commPool, VkDevice device, VkPhysicalDevice physDevice, VkQueue queue)
+	void AddMesh3D(const GP2Mesh3D& meshToAdd, const GP2CommandPool& commPool, VkDevice device, VkPhysicalDevice physDevice, VkQueue queue, const VkImageView& imgView, const VkSampler& texSampler)
 	{
 		m_Meshes.push_back(meshToAdd);
 
@@ -368,7 +368,7 @@ public:
 		////descriptorPool
 		m_DescriptorPools.emplace_back();
 		m_DescriptorPools.back().createDescriptorPool(device);
-		m_DescriptorPools.back().createDescriptorSets(m_Shader.GetDescriptorSetLayout(), m_UniformBuffers.back());
+		m_DescriptorPools.back().createDescriptorSets(m_Shader.GetDescriptorSetLayout(), m_UniformBuffers.back(), imgView, texSampler);
 	};
 
 	const std::vector<GP2UniformBuffer>& GetUniformBuffers() { return m_UniformBuffers; };

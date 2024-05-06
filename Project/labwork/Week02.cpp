@@ -37,8 +37,9 @@ void VulkanBase::createTextureImage()
 	copyBufferToImage(dataBuffer.GetBuffer(), textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
 	transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-	vkDestroyBuffer(device, dataBuffer.GetBuffer(), nullptr);
-	vkFreeMemory(device, dataBuffer.GetBufferMemory(), nullptr);
+	//setup destroy when going out of scope here
+	//vkDestroyBuffer(device, dataBuffer.GetBuffer(), nullptr);
+	//vkFreeMemory(device, dataBuffer.GetBufferMemory(), nullptr);
 }
 
 void VulkanBase::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)

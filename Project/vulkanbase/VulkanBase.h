@@ -65,8 +65,6 @@ private:
 		setupDebugMessenger();
 		createSurface();
 		
-		createTextureImage();
-		createTextureImageView();
 		// week 05
 		pickPhysicalDevice();
 		createLogicalDevice();
@@ -139,6 +137,12 @@ private:
 		//==COMM POOL==
 		commandPool.Initialize(device, findQueueFamilies(physicalDevice));
 		//createTextureImage();
+
+
+		//textures
+		createTextureImage();
+		createTextureImageView();
+		createTextureSampler();
 
 		//==ADD MESHES==
 		m_GraphicsPipeline3D.AddMesh3D(mesh3D1, commandPool, device, physicalDevice, graphicsQueue);

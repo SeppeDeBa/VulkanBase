@@ -5,7 +5,16 @@
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
+
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "VulkanUtil.h"
+
+
+
 
 #include <iostream>
 #include <stdexcept>
@@ -78,16 +87,18 @@ private:
 
 
 		mesh3D1.SetVertices({
-			{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
-			{ {0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-			{ {0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f} },
-			{ {-0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f} }
+				{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+	{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+	{{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+	{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+
+	{{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+	{{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+	{{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+	{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
 			});
 
-		mesh3D2.SetVertices({ {{-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-								{{0.5f, -0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-									{{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-								{{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}} });
+		mesh3D2.BuildMeshFromOBJ("Resources/viking_room.obj");
 		mesh3D3.SetVertices({ {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
 						{{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
 							{{0.5f, 0.5f, -0.5f}, {1.0f, 00.0f, 0.0f}},
@@ -105,8 +116,9 @@ private:
 			{ {-0.5f, -0.1f}, {1.0f, 1.0f, 1.0f} } });
 
 
-		mesh3D1.SetIndices({ 0, 1, 2, 2, 3, 0 });
-		mesh3D2.SetIndices({ 0, 1, 2, 2, 3, 0 });
+		mesh3D1.SetIndices({ 0, 1, 2, 2, 3, 0,
+	4, 5, 6, 6, 7, 4 });
+		//mesh3D2.SetIndices({ 0, 1, 2, 2, 3, 0 });
 		mesh3D3.SetIndices({ 0, 1, 2, 2, 3, 0 });
 		mesh2D1.SetIndices({ 0, 1, 2, 2, 3, 0 });
 		mesh2D2.SetIndices({ 0, 1, 2, 2, 3, 0 });
@@ -133,7 +145,6 @@ private:
 		m_GraphicsPipeline3D.CreateGraphicsPipeline(device, renderPass);
 
 		//==FRAME BUFFERS==
-		createFrameBuffers();
 		// week 02
 
 		//==COMM POOL==
@@ -141,14 +152,17 @@ private:
 		//createTextureImage();
 
 
+		createDepthResources();
+		createFrameBuffers();
+
 		//textures
 		createTextureImage();
 		createTextureImageView();
 		createTextureSampler();
 
 		//==ADD MESHES==
-		m_GraphicsPipeline3D.AddMesh3D(mesh3D1, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
-		//m_GraphicsPipeline3D.AddMesh3D(mesh3D2, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
+		//m_GraphicsPipeline3D.AddMesh3D(mesh3D1, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
+		m_GraphicsPipeline3D.AddMesh3D(mesh3D2, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
 
 		//disabling mesh 3, too cluttered, leaving it at 2 for hand-in
 		//m_GraphicsPipeline3D.AddMesh3D(mesh3D3, commandPool, device, physicalDevice, graphicsQueue);
@@ -323,6 +337,12 @@ private:
 	//GP2UniformBuffer uniformBuffer;
 	//GP2DescriptorPool descriptorPool;
 
+	//DEPTH BUFFER
+	VkImage depthImage;
+	VkDeviceMemory depthImageMemory;
+	VkImageView depthImageView;
+
+
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 	//VkPipelineLayout pipelineLayout;
 	//VkPipeline graphicsPipeline;
@@ -362,6 +382,13 @@ private:
 
 
 	void createTextureImage();
+
+	//depth buffer
+	void createDepthResources();
+	VkFormat findDepthFormat();
+	VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+	bool hasStencilComponent(VkFormat format);
+
 	void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 	void createTextureImageView();
 	void createTextureSampler();
@@ -397,7 +424,7 @@ private:
 	void cleanupSwapChain();
 
 	void createImageViews();
-	VkImageView createImageView(VkImage image, VkFormat format);
+	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 
 	// Week 05 
 	// Logical and physical device

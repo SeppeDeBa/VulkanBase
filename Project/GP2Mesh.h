@@ -98,12 +98,42 @@ public:
 
 	void BuildMeshFromOBJ(const std::string& filename)
 	{
-		if (!ParseOBJ(filename, vertices, indices))
+		tinyobj::attrib_t attrib;
+		std::vector<tinyobj::shape_t> shapes;
+		std::vector<tinyobj::material_t> materials;
+		std::string warn, err;
+
+		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename.c_str())) {
+			throw std::runtime_error(warn + err);
+		}
+
+		for (const auto& shape : shapes)
+		{
+			for (const auto& index : shape.mesh.indices)
+			{
+				Vertex3D vertex{};
+
+				vertex.pos = { attrib.vertices[3 * index.vertex_index + 0],
+								attrib.vertices[3 * index.vertex_index + 1],
+								attrib.vertices[3 * index.vertex_index + 2] };
+
+				vertex.texCoord = {attrib.texcoords[2 * index.texcoord_index + 0],
+									 1-attrib.texcoords[2 * index.texcoord_index + 1] };
+
+				vertex.color = { 1.f, 1.f, 1.f };
+
+				vertices.push_back(vertex);
+				indices.push_back(static_cast<uint32_t>(indices.size()));
+			}
+		}
+
+
+		/*if (!ParseOBJ(filename, vertices, indices))
 		{
 			throw std::runtime_error("failed to read file: " + filename);
 
 
-		}
+		}*/
 	}
 
 	static bool ParseOBJ(const std::string& filename, std::vector<Vertex3D>& positions, std::vector<uint16_t>& indices)

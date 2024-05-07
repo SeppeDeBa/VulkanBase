@@ -77,10 +77,12 @@ private:
 		//mesh3D1.BuildMeshFromOBJ("Resources/lowpoly_bunny.obj");
 
 
-		mesh3D1.SetVertices({ {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-			{ {0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f} },
-			{ {0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f} },
-			{ {-0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f} } });
+		mesh3D1.SetVertices({
+			{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
+			{ {0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+			{ {0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f} },
+			{ {-0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f} }
+			});
 
 		mesh3D2.SetVertices({ {{-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
 								{{0.5f, -0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
@@ -146,7 +148,7 @@ private:
 
 		//==ADD MESHES==
 		m_GraphicsPipeline3D.AddMesh3D(mesh3D1, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
-		m_GraphicsPipeline3D.AddMesh3D(mesh3D2, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
+		//m_GraphicsPipeline3D.AddMesh3D(mesh3D2, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
 
 		//disabling mesh 3, too cluttered, leaving it at 2 for hand-in
 		//m_GraphicsPipeline3D.AddMesh3D(mesh3D3, commandPool, device, physicalDevice, graphicsQueue);

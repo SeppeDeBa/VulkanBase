@@ -36,7 +36,7 @@ set(SOURCES
     "labwork/Week04.cpp" 
     "labwork/Week05.cpp"
     "labwork/Week06.cpp"
-    "GP2Shader.cpp" "GP2CommandPool.cpp" "GP2CommandBuffer.cpp" "GP2Mesh.h" "GP2DataBuffer.cpp" "3DCamera.h" "GP2DescriptorPool.cpp" "GP2Utils.h" "GP2Pipeline.h")
+    "GP2Shader.cpp" "GP2CommandPool.cpp" "GP2CommandBuffer.cpp" "GP2Mesh.h" "GP2DataBuffer.cpp" "3DCamera.h" "GP2DescriptorPool.cpp" "GP2Utils.h" "GP2Pipeline.h" "Camera.h")
 
     
    

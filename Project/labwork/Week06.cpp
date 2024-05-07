@@ -61,13 +61,17 @@ void VulkanBase::drawFrame() {
 	vkResetFences(device, 1, &inFlightFences[currentFrame]);
 	commandBuffers[currentFrame].reset();
 	commandBuffers[currentFrame].beginRecording();
-
+	
 	recordCommandBuffer(imageIndex);
 
 	commandBuffers[currentFrame].endRecording();
 
+	//camera update
+	camera.Update(window, dragStart);
+
+
 	//uniformBuffer.UpdateUniformBuffer(currentFrame);
-	m_GraphicsPipeline3D.UpdateUniformBuffers(currentFrame);
+	m_GraphicsPipeline3D.UpdateUniformBuffers(currentFrame, camera.CalculateCameraToWorld());
 	
 	//vkResetCommandBuffer(commandBuffer.getVkCommandBuffer(), /*VkCommandBufferResetFlagBits*/ 0);
 	//recordCommandBuffer(commandBuffer.getVkCommandBuffer(), imageIndex, vertexBuffer.GetVertexBuffer());

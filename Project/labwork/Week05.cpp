@@ -100,14 +100,7 @@ void VulkanBase::createLogicalDevice() {
 
 void VulkanBase::keyEvent(int key, int scancode, int action, int mods)
 {
-	if (key == GLFW_KEY_W && (action == GLFW_REPEAT || action == GLFW_PRESS))
-	{
-		m_Radius = std::max(3.0f, m_Radius - 0.2f);
-	}
-	if (key == GLFW_KEY_S && (action == GLFW_REPEAT || action == GLFW_PRESS))
-	{
-		m_Radius = std::min(30.0f, m_Radius + 0.2f);
-	}
+	camera.KeyEvent(key, scancode, action, mods);
 }
 
 void VulkanBase::mouseEvent(GLFWwindow* window, int button, int action, int mods)

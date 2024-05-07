@@ -398,11 +398,11 @@ public:
 	const std::vector<GP2UniformBuffer>& GetUniformBuffers() { return m_UniformBuffers; };
 	const std::vector<GP2DescriptorPool>& GetDescriptorPools() { return m_DescriptorPools; };
 
-	void UpdateUniformBuffers(uint32_t currentImage)
+	void UpdateUniformBuffers(uint32_t currentImage, const glm::mat4& cameraToWorld)
 	{
 		for(GP2UniformBuffer& uBuffer : m_UniformBuffers)
 		{
-			uBuffer.UpdateUniformBuffer(currentImage);
+			uBuffer.UpdateUniformBuffer(currentImage, cameraToWorld);
 		}
 	}
 

@@ -34,6 +34,7 @@
 #include "GP2DataBuffer.h"
 #include "GP2DescriptorPool.h"
 #include "GP2Pipeline.h"
+#include "Camera.h"
 const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"
 };
@@ -350,6 +351,9 @@ private:
 										"shaders/shader.frag.spv" };
 	GP2Pipeline3D m_GraphicsPipeline3D{ "shaders/shader3D.vert.spv",
 										"shaders/shader3D.frag.spv" };
+
+	Camera camera{};
+	glm::vec2 dragStart{};
 
 
 	VkRenderPass renderPass;

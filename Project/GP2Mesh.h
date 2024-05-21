@@ -83,6 +83,63 @@ struct Vertex3D {
 	}
 };
 
+struct VertexInstance
+{
+	glm::mat4 modelTransform;
+	glm::vec2 texCoord;
+
+	static VkVertexInputBindingDescription getBindingDescription()
+	{
+		VkVertexInputBindingDescription bindingDescription{};
+		bindingDescription.binding = 1; //should be non hardcoded in bigger render/game engines. could be managed
+		bindingDescription.stride = sizeof(VertexInstance);
+		bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_INSTANCE;
+		//OPTIONS:
+		//VK_VERTEX_INPUT_RATE_VERTEX: Move to the next data entry after each vertex
+		//VK_VERTEX_INPUT_RATE_INSTANCE : Move to the next data entry after each instance
+		return bindingDescription;
+	}
+	static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions(uint32_t location)
+	{
+		std::vector<VkVertexInputAttributeDescription> attributeDescriptions{5};
+
+		uint32_t binding = 1;
+		for (int i = 0; i < 4; i++) 
+		{
+			attributeDescriptions[i].binding = binding;
+			attributeDescriptions[i].location = location + i;
+			attributeDescriptions[i].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+			attributeDescriptions[i].offset = sizeof(float) * 4 * i;
+		}
+
+		attributeDescriptions[4].binding = binding;
+		attributeDescriptions[4].location = location + 4;
+		attributeDescriptions[4].format = VK_FORMAT_R32G32_SFLOAT;
+		attributeDescriptions[4].offset = offsetof(VertexInstance, texCoord);
+
+		return attributeDescriptions;
+	}
+
+	//static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions(uint32_t location)
+	//{
+	//	std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
+
+	//	attributeDescriptions[0].binding = 0;
+	//	attributeDescriptions[0].location = location;
+	//	attributeDescriptions[0].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+	//	attributeDescriptions[0].offset = offsetof(VertexInstance, modelTransform);
+
+	//	attributeDescriptions[1].binding = 0;
+	//	attributeDescriptions[1].location = location + 1;
+	//	attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
+	//	attributeDescriptions[1].offset = offsetof(VertexInstance, texCoord);
+
+
+
+	//	return attributeDescriptions;
+	//}
+};
+
 class GP2Mesh3D
 {
 public:
@@ -224,10 +281,16 @@ private:
 		{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
 	};
 	std::vector<uint16_t> indices = { 0, 1, 2, 2, 3, 0 };
+
+	uint16_t m_InstanceCount{ 1 };
+	std::vector<VertexInstance> m_InstanceData;
+
 	//vulkanbuffer vertices
 	//vulkanbuffer indices
 
 };
+
+
 
 
 

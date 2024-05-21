@@ -40,7 +40,6 @@ protected:
 
 	std::vector<VkPipelineShaderStageCreateInfo> m_ShaderStages{};
 
-
 };
  
 class GP2Shader3D : public GP2Shader  

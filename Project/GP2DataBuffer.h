@@ -5,6 +5,7 @@
 
 
 #include <vulkan/vulkan_core.h>
+#include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
@@ -180,7 +181,60 @@ public:
 };
 
 
+class GP2InstanceBuffer : public GP2BufferBase
+{
+public:
+	virtual void CreateBuffer(const GP2Mesh& mesh) { std::cout << "CreateBuffer called on a GP2InstanceBuffer, should be CreateInstanceBuffer" << std::endl; };
+	virtual void CreateBuffer3D(const GP2Mesh3D& mesh) { std::cout << "CreateBuffer3D called on a GP2InstanceBuffer, should be CreateInstanceBuffer" << std::endl; };
 
+	void CreateInstanceBuffer(std::vector<VertexInstance>& instanceData)
+	{
+
+		VkDeviceSize bufferSize = sizeof(VertexInstance) * instanceData.size();
+
+		GP2DataBuffer stagingBuffer{ m_Device
+									, m_PhysicalDevice
+									, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+									, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+									, bufferSize };
+
+		void* data;
+		vkMapMemory(m_Device, stagingBuffer.GetBufferMemory(), 0, bufferSize, 0, &data);
+		memcpy(data, instanceData.data(), (size_t)bufferSize);
+		vkUnmapMemory(m_Device, stagingBuffer.GetBufferMemory());
+
+		m_BufferInfo = new GP2DataBuffer(m_Device
+			, m_PhysicalDevice
+			, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT
+			, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT //VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+			, bufferSize);
+
+		CopyBuffer(stagingBuffer.GetBuffer(), m_BufferInfo->GetBuffer(), bufferSize);
+		/*vkDestroyBuffer(m_Device, stagingBuffer.GetBuffer(), nullptr);
+		vkFreeMemory(m_Device, stagingBuffer.GetBufferMemory(), nullptr);*/
+	}
+
+	void UpdateInstanceBuffer(std::vector<VertexInstance>& instanceData)
+	{
+
+		VkDeviceSize bufferSize = sizeof(VertexInstance) * instanceData.size();
+
+		GP2DataBuffer stagingBuffer{ m_Device
+									, m_PhysicalDevice
+									, VK_BUFFER_USAGE_TRANSFER_SRC_BIT
+									, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+									, bufferSize };
+
+		void* data;
+		vkMapMemory(m_Device, stagingBuffer.GetBufferMemory(), 0, bufferSize, 0, &data);
+		memcpy(data, instanceData.data(), (size_t)bufferSize);
+		vkUnmapMemory(m_Device, stagingBuffer.GetBufferMemory());
+
+		CopyBuffer(stagingBuffer.GetBuffer(), m_BufferInfo->GetBuffer(), bufferSize);
+		/*vkDestroyBuffer(m_Device, stagingBuffer.GetBuffer(), nullptr);
+		vkFreeMemory(m_Device, stagingBuffer.GetBufferMemory(), nullptr);*/
+	}
+};
 
 class GP2IndexBuffer : public GP2BufferBase
 {

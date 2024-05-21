@@ -595,6 +595,10 @@ public:
 			dPools.cleanup();
 		}
 		m_Shader.Cleanup(device);
+		for (GP2InstanceBuffer& iBuffer : m_InstanceBuffers)
+		{
+			iBuffer.Cleanup();
+		}
 
 	}
 	virtual void Initialize(const VkDevice& device) override
@@ -614,7 +618,7 @@ public:
 
 		//instance initializing
 		//1. instances
-		m_InstanceCounts.emplace_back(1);
+		m_InstanceCounts.emplace_back(m_Instances);
 		//2. instanceData
 		m_InstanceDatas.emplace_back(std::vector<VertexInstance>());//shouldnt need manual VI vect, but placing it to show that its a vector of the vertices
 		//3. instanceBuffer
@@ -662,7 +666,8 @@ private:
 		}
 	}
 	//instanced stuff
-	std::vector<uint16_t> m_InstanceCounts{ 1 };
+	const uint16_t m_Instances{ 50 };
+	std::vector<uint16_t> m_InstanceCounts{ m_Instances };
 	std::vector<std::vector<VertexInstance>> m_InstanceDatas{};
 	std::vector<GP2InstanceBuffer> m_InstanceBuffers{ };
 	

@@ -133,6 +133,7 @@ private:
 		//m_3DShader.initialize(device);
 		m_GraphicsPipeline2D.Initialize(device);
 		m_GraphicsPipeline3D.Initialize(device);
+		m_GraphicsPipelineInstance.Initialize(device);
 		//m_3DShader.CreateDescriptorSetLayout(device);
 
 		//==RENDER PASS==
@@ -144,6 +145,7 @@ private:
 		//createGraphicsPipeline3D();
 		m_GraphicsPipeline2D.CreateGraphicsPipeline(device, renderPass);
 		m_GraphicsPipeline3D.CreateGraphicsPipeline(device, renderPass);
+		m_GraphicsPipelineInstance.CreateGraphicsPipeline(device, renderPass);
 
 		//==FRAME BUFFERS==
 		// week 02
@@ -163,8 +165,10 @@ private:
 
 		//==ADD MESHES==
 		//m_GraphicsPipeline3D.AddMesh3D(mesh3D1, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
-		m_GraphicsPipeline3D.AddMesh3D(mesh3D2, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
+		//m_GraphicsPipeline3D.AddMesh3D(mesh3D2, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
 
+		m_GraphicsPipelineInstance.AddMesh3D(mesh3D1, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
+		
 		//disabling mesh 3, too cluttered, leaving it at 2 for hand-in
 		//m_GraphicsPipeline3D.AddMesh3D(mesh3D3, commandPool, device, physicalDevice, graphicsQueue);
 
@@ -216,7 +220,8 @@ private:
 
 		m_GraphicsPipeline2D.Cleanup(device);
 		m_GraphicsPipeline3D.Cleanup(device);
-		
+		m_GraphicsPipelineInstance.Cleanup(device);
+
 		vkDestroySampler(device, textureSampler, nullptr);
 		vkDestroyImageView(device, textureImageView, nullptr);
 
@@ -345,13 +350,15 @@ private:
 
 
 	std::vector<VkFramebuffer> swapChainFramebuffers;
-	//VkPipelineLayout pipelineLayout;
-	//VkPipeline graphicsPipeline;
+
+
 	GP2Pipeline2D m_GraphicsPipeline2D{ "shaders/shader.vert.spv",
 										"shaders/shader.frag.spv" };
 	GP2Pipeline3D m_GraphicsPipeline3D{ "shaders/shader3D.vert.spv",
 										"shaders/shader3D.frag.spv" };
 
+	GP2PipelineInstance m_GraphicsPipelineInstance{ "shaders/shaderInstanced.vert.spv" ,
+													"shaders/shader3D.frag.spv" };
 	Camera camera{};
 	glm::vec2 dragStart{};
 

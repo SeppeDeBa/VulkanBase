@@ -330,8 +330,8 @@ void VulkanBase::drawFrame(uint32_t imageIndex) {
 	vkCmdSetScissor(commandBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, &scissor);//todo: ask if needed?
 
 	//just draw both here?
-	vkCmdBindPipeline(commandBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline2D.GetPipeline());
-	m_GraphicsPipeline2D.Record(commandBuffers, imageIndex, currentFrame);
+	//vkCmdBindPipeline(commandBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline2D.GetPipeline());
+	//m_GraphicsPipeline2D.Record(commandBuffers, imageIndex, currentFrame);
 
 	//record ends here
 
@@ -339,10 +339,15 @@ void VulkanBase::drawFrame(uint32_t imageIndex) {
 
 	//3D  ==============================================================================
 	//just draw both here
-	vkCmdBindPipeline(commandBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline3D.GetPipeline());
-	m_GraphicsPipeline3D.Record(commandBuffers, imageIndex, currentFrame);
+	//vkCmdBindPipeline(commandBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline3D.GetPipeline());
+	//m_GraphicsPipeline3D.Record(commandBuffers, imageIndex, currentFrame);
 	
 	//record ends here
+
+	
+	//instance
+	vkCmdBindPipeline(commandBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipelineInstance.GetPipeline());
+	m_GraphicsPipelineInstance.Record(commandBuffers, imageIndex, currentFrame);
 
 	vkCmdEndRenderPass(commandBuffers[currentFrame].GetVkCommandBuffer());
 

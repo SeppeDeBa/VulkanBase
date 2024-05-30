@@ -17,7 +17,14 @@ struct UniformBufferObject {
 	alignas(16) glm::mat4 view;
 	alignas(16) glm::mat4 proj;
 };
+struct UniformBufferObjectInstance {
+	alignas(16) glm::mat4 proj;
+	alignas(16) glm::mat4 view;
+};
 
+struct PushConstants {
+	alignas(16) glm::mat4 model;
+};
 
 class GP2DataBuffer
 {

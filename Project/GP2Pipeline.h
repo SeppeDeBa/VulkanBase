@@ -570,13 +570,20 @@ public:
 			VkDeviceSize offsets[] = { 0 };
 			//bind all buffers
 			vkCmdBindVertexBuffers(commBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, vertexBuffers, offsets);
-			
 			m_InstanceBuffers[i].UpdateInstanceBuffer(m_InstanceDatas[i]);
+			vkCmdBindVertexBuffers(commBuffers[currentFrame].GetVkCommandBuffer(), 1, 1, instanceBuffers, offsets);
 
-			vkCmdBindVertexBuffers(commBuffers[currentFrame].GetVkCommandBuffer(), 0, 1, instanceBuffers, offsets);
+			//pushConstant
+			// todo: KOEN -> vkCmdPushConstants should be here.
+			//vkCmdPushConstants(commBuffers[currentFrame].GetVkCommandBuffer(), m_PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(), m_VertexConstant
+
 			vkCmdBindIndexBuffer(commBuffers[currentFrame].GetVkCommandBuffer(), indexBuffers, 0, VK_INDEX_TYPE_UINT16);
 			vkCmdBindDescriptorSets(commBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout, 0, 1, &m_DescriptorPools[i].GetDescriptorSets()[currentFrame], 0, nullptr);
 			vkCmdDrawIndexed(commBuffers[currentFrame].GetVkCommandBuffer(), static_cast<uint32_t>(m_Meshes[i].GetIndices().size()), 1, 0, 0, 0);
+		
+		
+		
+		
 		}
 		//vkCmdDraw(commandBuffer.getVkCommandBuffer(), 6, 1, 0, 0);
 	}
@@ -671,6 +678,9 @@ private:
 	std::vector<std::vector<VertexInstance>> m_InstanceDatas{};
 	std::vector<GP2InstanceBuffer> m_InstanceBuffers{ };
 	
+	
+
+
 	std::vector<VkVertexInputBindingDescription> m_VertexInputBindingDescriptions{};
 	std::vector<VkVertexInputAttributeDescription> m_VertexInputAttributeDescriptors{};
 

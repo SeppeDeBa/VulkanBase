@@ -212,8 +212,10 @@ public:
 
 		m_BufferInfo = new GP2DataBuffer(m_Device
 			, m_PhysicalDevice
-			, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT
+			, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
+			//, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT
 			, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT //VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
+			//, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT //VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
 			, bufferSize);
 
 		CopyBuffer(stagingBuffer.GetBuffer(), m_BufferInfo->GetBuffer(), bufferSize);
@@ -373,7 +375,7 @@ public:
 		UniformBufferObject ubo{};
 		ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		ubo.view = glm::lookAt(glm::vec3(cameraToWorld[3]), glm::vec3(cameraToWorld[3]) + glm::vec3(cameraToWorld[2]), glm::vec3(cameraToWorld[1]));
-		ubo.proj = glm::perspective(glm::radians(45.0f), WIDTH / static_cast<float>(HEIGHT), 0.1f, 10.0f);
+		ubo.proj = glm::perspective(glm::radians(45.0f), WIDTH / static_cast<float>(HEIGHT), 0.1f, 1000.0f);
 		ubo.proj[1][1] *= -1;
 	
 		memcpy(m_UniformBuffersMapped[currentImage], &ubo, sizeof(ubo));

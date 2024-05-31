@@ -341,7 +341,8 @@ private:
 //		vkBindBufferMemory(m_Device, m_VertexBuffer, m_VertexBufferMemory, 0);
 //
 //		void* data;
-//		vkMapMemory(m_Device, m_VertexBufferMemory, 0, bufferInfo.size, 0, &data);
+//		vkMapMemory(m_Device, m_VertexBufferMemory, 0, bufferInfo.
+// , 0, &data);
 //		memcpy(data, mesh.GetVertices().data(), (size_t)bufferInfo.size);
 //		vkUnmapMemory(m_Device, m_VertexBufferMemory);
 //	}

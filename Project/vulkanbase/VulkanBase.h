@@ -99,7 +99,7 @@ private:
 	{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
 			});
 
-		mesh3D2.BuildMeshFromOBJ("Resources/viking_room.obj");
+		mesh3D2.BuildMeshFromOBJ("Resources/cube.obj");
 		mesh3D3.SetVertices({ {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
 						{{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
 							{{0.5f, 0.5f, -0.5f}, {1.0f, 00.0f, 0.0f}},
@@ -167,7 +167,7 @@ private:
 		//m_GraphicsPipeline3D.AddMesh3D(mesh3D1, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
 		//m_GraphicsPipeline3D.AddMesh3D(mesh3D2, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
 
-		m_GraphicsPipelineInstance.AddMesh3D(mesh3D1, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
+		m_GraphicsPipelineInstance.AddMesh3D(mesh3D2, commandPool, device, physicalDevice, graphicsQueue, textureImageView, textureSampler);
 		
 		//disabling mesh 3, too cluttered, leaving it at 2 for hand-in
 		//m_GraphicsPipeline3D.AddMesh3D(mesh3D3, commandPool, device, physicalDevice, graphicsQueue);

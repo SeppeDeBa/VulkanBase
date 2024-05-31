@@ -579,10 +579,7 @@ public:
 
 			vkCmdBindIndexBuffer(commBuffers[currentFrame].GetVkCommandBuffer(), indexBuffers, 0, VK_INDEX_TYPE_UINT16);
 			vkCmdBindDescriptorSets(commBuffers[currentFrame].GetVkCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout, 0, 1, &m_DescriptorPools[i].GetDescriptorSets()[currentFrame], 0, nullptr);
-			vkCmdDrawIndexed(commBuffers[currentFrame].GetVkCommandBuffer(), static_cast<uint32_t>(m_Meshes[i].GetIndices().size()), 1, 0, 0, 0);
-		
-		
-		
+			vkCmdDrawIndexed(commBuffers[currentFrame].GetVkCommandBuffer(), static_cast<uint32_t>(m_Meshes[i].GetIndices().size()), m_Instances, 0, 0, 0);
 		
 		}
 		//vkCmdDraw(commandBuffer.getVkCommandBuffer(), 6, 1, 0, 0);
@@ -628,11 +625,17 @@ public:
 		m_InstanceCounts.emplace_back(m_Instances);
 		//2. instanceData
 		m_InstanceDatas.emplace_back(std::vector<VertexInstance>());//shouldnt need manual VI vect, but placing it to show that its a vector of the vertices
+
+		m_InstanceDatas.back().resize(m_Instances);
 		//3. instanceBuffer
 		m_InstanceBuffers.emplace_back();
 		m_InstanceBuffers.back().Initialize(device, physDevice, commPool.GetCommandPool(), queue);
-		m_InstanceBuffers.back().CreateInstanceBuffer(m_InstanceDatas.back());
+		for (int i{}; i < m_Instances; ++i)
+		{
+			setInstanceData(m_MeshCount, i, glm::vec3{ i * 2.f,2.f,2.f }, glm::vec2(2.f, 6.f));
+		}
 
+		m_InstanceBuffers.back().CreateInstanceBuffer(m_InstanceDatas.back());
 		//Index Buffer
 		m_IndexBuffers.emplace_back();
 		m_IndexBuffers.back().Initialize(device, physDevice, commPool.GetCommandPool(), queue);
@@ -647,6 +650,9 @@ public:
 		m_DescriptorPools.emplace_back();
 		m_DescriptorPools.back().createDescriptorPool(device);
 		m_DescriptorPools.back().createDescriptorSets(m_Shader.GetDescriptorSetLayout(), m_UniformBuffers.back(), imgView, texSampler);
+
+
+		++m_MeshCount;
 	};
 
 	const std::vector<GP2UniformBuffer>& GetUniformBuffers() { return m_UniformBuffers; };
@@ -663,7 +669,7 @@ public:
 
 private:
 	std::vector<GP2Mesh3D> m_Meshes{};
-	
+
 	void setInstanceData(int meshNr, uint32_t instanceId, glm::vec3 t, glm::vec2 tc)
 	{
 		if (instanceId < m_InstanceCounts[meshNr])
@@ -673,6 +679,7 @@ private:
 		}
 	}
 	//instanced stuff
+	int m_MeshCount{0};
 	const uint16_t m_Instances{ 50 };
 	std::vector<uint16_t> m_InstanceCounts{ m_Instances };
 	std::vector<std::vector<VertexInstance>> m_InstanceDatas{};

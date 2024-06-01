@@ -84,7 +84,7 @@ public:
 
 	virtual void CreateBuffer(const GP2Mesh& mesh) = 0;
 	virtual void CreateBuffer3D(const GP2Mesh3D&) = 0;
-	//virtual void CreateBuffer(const VkDeviceSize size);
+
 
 protected:
 	VkDevice m_Device;
@@ -157,8 +157,7 @@ public:
 			, bufferSize);
 
 		CopyBuffer(stagingBuffer.GetBuffer(), m_BufferInfo->GetBuffer(), bufferSize);
-		/*vkDestroyBuffer(m_Device, stagingBuffer.GetBuffer(), nullptr);
-		vkFreeMemory(m_Device, stagingBuffer.GetBufferMemory(), nullptr);*/
+
 	}
 	virtual void CreateBuffer3D(const GP2Mesh3D& mesh)
 	{
@@ -182,8 +181,7 @@ public:
 			, bufferSize);
 
 		CopyBuffer(stagingBuffer.GetBuffer(), m_BufferInfo->GetBuffer(), bufferSize);
-		/*vkDestroyBuffer(m_Device, stagingBuffer.GetBuffer(), nullptr);
-		vkFreeMemory(m_Device, stagingBuffer.GetBufferMemory(), nullptr);*/
+
 	}
 };
 
@@ -213,14 +211,11 @@ public:
 		m_BufferInfo = new GP2DataBuffer(m_Device
 			, m_PhysicalDevice
 			, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
-			//, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT
 			, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT //VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
-			//, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT //VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
 			, bufferSize);
 
 		CopyBuffer(stagingBuffer.GetBuffer(), m_BufferInfo->GetBuffer(), bufferSize);
-		/*vkDestroyBuffer(m_Device, stagingBuffer.GetBuffer(), nullptr);
-		vkFreeMemory(m_Device, stagingBuffer.GetBufferMemory(), nullptr);*/
+
 	}
 
 	void UpdateInstanceBuffer(std::vector<VertexInstance>& instanceData)
@@ -240,8 +235,6 @@ public:
 		vkUnmapMemory(m_Device, stagingBuffer.GetBufferMemory());
 
 		CopyBuffer(stagingBuffer.GetBuffer(), m_BufferInfo->GetBuffer(), bufferSize);
-		/*vkDestroyBuffer(m_Device, stagingBuffer.GetBuffer(), nullptr);
-		vkFreeMemory(m_Device, stagingBuffer.GetBufferMemory(), nullptr);*/
 	}
 };
 
@@ -272,8 +265,6 @@ public:
 			, bufferSize);
 
 		CopyBuffer(stagingBuffer.GetBuffer(), m_BufferInfo->GetBuffer(), bufferSize);
-		/*vkDestroyBuffer(m_Device, stagingBuffer.GetBuffer(), nullptr);
-		vkFreeMemory(m_Device, stagingBuffer.GetBufferMemory(), nullptr);*/
 	}
 	virtual void CreateBuffer3D(const GP2Mesh3D& mesh)
 	{
@@ -297,8 +288,6 @@ public:
 			, bufferSize);
 
 		CopyBuffer(stagingBuffer.GetBuffer(), m_BufferInfo->GetBuffer(), bufferSize);
-		/*vkDestroyBuffer(m_Device, stagingBuffer.GetBuffer(), nullptr);
-		vkFreeMemory(m_Device, stagingBuffer.GetBufferMemory(), nullptr);*/
 	}
 };
 
@@ -312,15 +301,6 @@ public:
 			delete uniformBuffer;
 		}
 
-		//for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-		//{
-		//	m_UniformBufferInfos[i]->Destroy();
-		//}
-		//is this needed?
-		//for (auto uniformBufferMapped : uniformBuffersMapped)
-		//{
-		//	delete uniformBufferMapped;
-		//}
 	}
 
 	virtual void CreateBuffer(const GP2Mesh&) override
@@ -340,7 +320,7 @@ public:
 			
 			vkMapMemory(m_Device, m_UniformBufferInfos[i]->GetBufferMemory(), 0, bufferSize, 0,
 				&m_UniformBuffersMapped[i]);
-			//uniformBuffersMapped[i] = static_cast<VkDeviceMemory*>(pData);
+
 		}
 	}
 	virtual void CreateBuffer3D(const GP2Mesh3D&)
@@ -360,7 +340,6 @@ public:
 
 			vkMapMemory(m_Device, m_UniformBufferInfos[i]->GetBufferMemory(), 0, bufferSize, 0,
 				&m_UniformBuffersMapped[i]);
-			//uniformBuffersMapped[i] = static_cast<VkDeviceMemory*>(pData);
 		}
 	}
 

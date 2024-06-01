@@ -153,6 +153,16 @@ public:
 		vertices = input;
 	}
 
+	void TranslateVertices(const float x, const float y, const float z)
+	{
+		for(Vertex3D& vert : vertices)
+		{
+			vert.pos.x += x;
+			vert.pos.y += y;
+			vert.pos.z += z;
+		}
+	}
+
 	void BuildMeshFromOBJ(const std::string& filename)
 	{
 		tinyobj::attrib_t attrib;

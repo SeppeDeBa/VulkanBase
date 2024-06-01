@@ -560,7 +560,7 @@ public:
 	}
 
 
-	virtual void Record(std::vector<GP2CommandBuffer>& commBuffers, uint32_t imageIndex, uint32_t currentFrame) override
+	virtual void Record(std::vector<GP2CommandBuffer>& commBuffers, uint32_t imageIndex, uint32_t currentFrame) override ////change m_ActivateRandomization to activate random InstanceData
 	{
 		for (int i{}; i < m_Meshes.size(); ++i)
 		{
@@ -611,6 +611,7 @@ public:
 		m_Shader.CreateDescriptorSetLayout(device);
 	}
 
+	////change m_ActivateRandomization to activate random InstanceData
 	void AddMesh3D(const GP2Mesh3D& meshToAdd, const GP2CommandPool& commPool, VkDevice device, VkPhysicalDevice physDevice, VkQueue queue, const VkImageView& imgView, const VkSampler& texSampler)
 	{
 		m_Meshes.push_back(meshToAdd);
@@ -632,7 +633,7 @@ public:
 		m_InstanceBuffers.back().Initialize(device, physDevice, commPool.GetCommandPool(), queue);
 		for (int i{}; i < m_Instances; ++i)
 		{
-			setInstanceData(m_MeshCount, i, glm::vec3{ i * 1.f,2.f,1.f }, glm::vec2(static_cast<float>(rand()%16)+1.f, static_cast<float>(rand() % 16)+1.f));
+			setInstanceData(m_MeshCount, i, glm::vec3{ i * m_XOffsetPerInstance,2.f,1.f }, glm::vec2(static_cast<float>(rand()% m_TextureCols), static_cast<float>(rand() % m_TextureRows)));
 		}
 
 		m_InstanceBuffers.back().CreateInstanceBuffer(m_InstanceDatas.back());
@@ -670,22 +671,50 @@ public:
 private:
 	std::vector<GP2Mesh3D> m_Meshes{};
 
-	void setInstanceData(int meshNr, uint32_t instanceId, glm::vec3 t, glm::vec2 tc)
+	void setInstanceData(int meshNr, uint32_t instanceId, glm::vec3 t, glm::vec2 tc) //change m_ActivateRandomization to activate random InstanceData
 	{
 		if (instanceId < m_InstanceCounts[meshNr])
 		{
-			m_InstanceDatas[meshNr][instanceId].modelTransform = glm::translate(glm::mat4(1.0), t);
+			if(m_ActivateRandomization)
+			{
+				glm::vec3 randomOffset = t;
+				randomOffset += (rand() % (m_MaxTranslation + m_MinTranslation)) + 1.f - m_MinTranslation;
+				m_InstanceDatas[meshNr][instanceId].modelTransform = glm::translate(glm::mat4(1.0), randomOffset);
+				m_InstanceDatas[meshNr][instanceId].modelTransform = glm::rotate(m_InstanceDatas[meshNr][instanceId].modelTransform,
+					glm::radians(static_cast<float>(rand() % m_MaxRandRotation)), glm::vec3(0.f,0.f,1.f));
+				m_InstanceDatas[meshNr][instanceId].modelTransform = glm::scale(m_InstanceDatas[meshNr][instanceId].modelTransform,
+					glm::vec3(static_cast<float>(rand() % m_MaxRandScale)+1.f));//adding 1 so its never scale 0
+			}
+			else
+			{
+				m_InstanceDatas[meshNr][instanceId].modelTransform = glm::translate(glm::mat4(1.0), t);
+				
+			}
+
+
 			m_InstanceDatas[meshNr][instanceId].texCoord = tc;
 		}
 	}
 	//instanced stuff
 	int m_MeshCount{0};
-	const uint16_t m_Instances{ 50 };
+	//instanced settings //IMPORTANT NOTE. Using non seeded rands and non decimals, just for ease of use and proof that it works as there is another deadline tomorrow :)
+	bool m_ActivateRandomization{ false };
+	const uint16_t m_Instances{ 20 };
+	const float m_XOffsetPerInstance{ 1.f };
+	const int m_TextureCols{ 16 };
+	const int m_TextureRows{ 16 };
+	const int m_MaxRandScale{2};
+	const int m_MaxRandRotation{360};
+	const int m_MinTranslation{ 3 };
+	const int m_MaxTranslation{ 5 };
+	const glm::vec2 m_MaxRandTranslation{3.f};
+
+
 	std::vector<uint16_t> m_InstanceCounts{ m_Instances };
 	std::vector<std::vector<VertexInstance>> m_InstanceDatas{};
 	std::vector<GP2InstanceBuffer> m_InstanceBuffers{ };
-	
-	
+
+
 
 
 	std::vector<VkVertexInputBindingDescription> m_VertexInputBindingDescriptions{};

@@ -26,7 +26,12 @@ gl_Position = ubo.proj* ubo.view* model* vec4(inPosition.xyz , 1);
 
 fragColor = inColor;
 // 32 pixels width and height of cell in texture atlas.
-vec2 cellSize = vec2(1.0 / 16.0, 1.0 / 16.0);
-fragTexCoord = texCoordOffset * 32.f + inTexCoord;
+vec2 cellSize = vec2(1.0 / 32.0f, 1.0 / 32.0f);
+//fragTexCoord = ((inTexCoord * cellSize) + (texCoordOffset *cellSize));
+fragTexCoord =  texCoordOffset/16.f + inTexCoord/16.f;
+//fragTexCoord = inTexCoord/16.f + texCoordOffset/32.f;
+//(inTexCoord/32.f) + texCoordOffset*32.f;
+//fragTexCoord =(texCoordOffset + inTexCoord)/ 32.0f;
+//texCoordOffset * 32.f + inTexCoord;
   //texCoordOffset * cellSize + inTexCoord / 32.f;
 }

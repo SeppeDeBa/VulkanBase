@@ -632,7 +632,7 @@ public:
 		m_InstanceBuffers.back().Initialize(device, physDevice, commPool.GetCommandPool(), queue);
 		for (int i{}; i < m_Instances; ++i)
 		{
-			setInstanceData(m_MeshCount, i, glm::vec3{ i * 2.f,2.f,2.f }, glm::vec2(2.f, 6.f));
+			setInstanceData(m_MeshCount, i, glm::vec3{ i * 1.f,2.f,1.f }, glm::vec2(static_cast<float>(rand()%16)+1.f, static_cast<float>(rand() % 16)+1.f));
 		}
 
 		m_InstanceBuffers.back().CreateInstanceBuffer(m_InstanceDatas.back());

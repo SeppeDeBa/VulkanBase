@@ -99,7 +99,7 @@ private:
 	{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
 			});
 
-		mesh3D2.BuildMeshFromOBJ("Resources/cube.obj");
+		mesh3D2.BuildMeshFromOBJ("Resources/cube2.obj");
 		mesh3D3.SetVertices({ {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
 						{{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
 							{{0.5f, 0.5f, -0.5f}, {1.0f, 00.0f, 0.0f}},
